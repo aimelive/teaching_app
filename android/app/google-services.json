@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "993274452383",
+    "project_id": "e-connect-ba625",
+    "storage_bucket": "e-connect-ba625.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993274452383:android:428d7e7c1be109118e85aa",
+        "android_client_info": {
+          "package_name": "com.econnect.teaching"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993274452383-ek275qdqno2of2t6vgraqljmd72ed5gk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ4ugEtz2239JjJmsPTvqGYqLz8M7MUns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993274452383-ek275qdqno2of2t6vgraqljmd72ed5gk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "993274452383-9ts2nvurtd24icv6eu58ieudju4l49po.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.econnect.teaching"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
