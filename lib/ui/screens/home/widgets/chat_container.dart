@@ -94,6 +94,10 @@ class _ChatContainerState extends State<ChatContainer> {
                       ],
                     );
                   }
+                  _chatState.chatsByUser.sort(
+                    (a, b) => b.latestMessage.createdAt
+                        .compareTo(a.latestMessage.createdAt),
+                  );
                   return Column(
                     children: _chatState.chatsByUser
                         .map(

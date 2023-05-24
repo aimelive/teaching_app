@@ -1,6 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/auth.dart';
+import 'package:e_connect_mobile/data/controllers/school.dart';
+import 'package:e_connect_mobile/data/controllers/teacher_class.dart';
+import 'package:e_connect_mobile/data/models/school.dart';
+import 'package:e_connect_mobile/data/models/teacher_class.dart';
 import 'package:e_connect_mobile/data/models/user.dart';
 import 'package:e_connect_mobile/services/auth_service.dart';
 import 'package:e_connect_mobile/services/user_service.dart';
@@ -57,31 +62,6 @@ class AppUtils {
         backgroundColor: primaryColor,
       );
     }
-
-    // if (await hiveUtil.addAuth("fake-token", dummyUser)) {
-    //   authState.user.value = dummyUser;
-    //   if (mounted) {
-    //     pushReplace(
-    //       context,
-    //       to: const HomeScreen(),
-    //     );
-    //   }
-    // }
-    // final data = await userApi.login(email, pwd);
-
-    // if (data != null) {
-    //   final userData = await userApi.getUser(email, data["access_token"] ?? "");
-    //   if (userData != null) {
-    //     if (await hiveUtil.addAuth(data["access_token"], userData)) {
-    //       if (mounted) {
-    //         pushReplace(
-    //           context,
-    //           to: const HomeScreen(),
-    //         );
-    //       }
-    //     }
-    //   }
-    // }
     onLoading(false);
   }
 
@@ -134,6 +114,47 @@ class AppUtils {
       return null;
     } finally {
       onLoading(false);
+    }
+  }
+
+  void mapSchoolsToState(List<QueryDocumentSnapshot<Object?>> docs,
+      SchoolsState state, BuildContext context, String? currentUser) {
+    try {
+      if (currentUser == null) return;
+      final chats = docs.map((DocumentSnapshot document) {
+        Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+        return School.fromJson(data);
+      });
+      final filtered = chats.toList();
+      filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      state.schools.value = filtered;
+    } catch (e) {
+      print(e);
+      UiUtils.showCustomSnackBar(
+        context: context,
+        errorMessage: "Something went wrong, $e, restart the app.",
+        backgroundColor: secondaryColor,
+      );
+    }
+  }
+
+  void mapClassesToState(List<QueryDocumentSnapshot<Object?>> docs,
+      TeacherClassesState state, BuildContext context, String? currentUser) {
+    try {
+      if (currentUser == null) return;
+      final classes = docs.map((DocumentSnapshot document) {
+        Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+        return TeacherClass.fromJson(data);
+      });
+      final filtered = classes.toList();
+      filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      state.classes.value = filtered;
+    } catch (e) {
+      UiUtils.showCustomSnackBar(
+        context: context,
+        errorMessage: "Something went wrong, $e, restart the app.",
+        backgroundColor: secondaryColor,
+      );
     }
   }
 }

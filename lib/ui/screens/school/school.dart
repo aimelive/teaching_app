@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_connect_mobile/data/models/school.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
-import 'package:e_connect_mobile/ui/widgets/tab_bar_container.dart';
-import 'package:e_connect_mobile/ui/widgets/tab_bar_background_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,7 +14,7 @@ class SchoolScreen extends StatefulWidget {
 }
 
 class _SchoolScreenState extends State<SchoolScreen> {
-  late String _selectedTabTitle = "Teachers";
+  // late String _selectedTabTitle = "Teachers";
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +62,12 @@ class _SchoolScreenState extends State<SchoolScreen> {
                               ),
                             ),
                           ),
-                          addHorizontalSpace(30),
-                          IconButton(
-                            icon: const Icon(Icons.edit_square),
-                            color: whiteColor,
-                            onPressed: () {},
-                          ),
+                          // addHorizontalSpace(30),
+                          // IconButton(
+                          //   icon: const Icon(Icons.edit_square),
+                          //   color: whiteColor,
+                          //   onPressed: () {},
+                          // ),
                         ],
                       ),
                     ],
@@ -78,82 +76,82 @@ class _SchoolScreenState extends State<SchoolScreen> {
               ),
             ),
             // Text("Hey"),
-            Container(
-              margin: const EdgeInsets.all(5),
-              height: 50.h,
-              width: double.infinity,
-              child: LayoutBuilder(builder: (context, boxConstraints) {
-                return Stack(
-                  children: [
-                    AnimatedAlign(
-                      curve: Curves.easeInOut,
-                      duration: const Duration(milliseconds: 300),
-                      alignment: _selectedTabTitle == "Teachers"
-                          ? AlignmentDirectional.centerStart
-                          : _selectedTabTitle == "Assistants"
-                              ? AlignmentDirectional.center
-                              : AlignmentDirectional.centerEnd,
-                      child: TabBarBackgroundContainer(
-                        boxConstraints: boxConstraints,
-                      ),
-                    ),
-                    CustomTabBarContainer(
-                      boxConstraints: boxConstraints,
-                      alignment: AlignmentDirectional.centerStart,
-                      isSelected: _selectedTabTitle == "Teachers",
-                      onTap: () {
-                        setState(() {
-                          _selectedTabTitle = "Teachers";
-                        });
-                      },
-                      titleKey: "Teachers",
-                    ),
-                    CustomTabBarContainer(
-                      boxConstraints: boxConstraints,
-                      alignment: AlignmentDirectional.center,
-                      isSelected: _selectedTabTitle == "Assistants",
-                      onTap: () {
-                        setState(() {
-                          _selectedTabTitle = "Assistants";
-                        });
-                      },
-                      titleKey: "Assistants",
-                    ),
-                    CustomTabBarContainer(
-                      boxConstraints: boxConstraints,
-                      alignment: AlignmentDirectional.centerEnd,
-                      isSelected: _selectedTabTitle == "PO Manager",
-                      onTap: () {
-                        setState(() {
-                          _selectedTabTitle = "PO Manager";
-                        });
-                      },
-                      titleKey: "PO Manager",
-                    ),
-                  ],
-                );
-              }),
-            ),
-            Column(
-              children: []
-                  .map(
-                    (user) => ListTile(
-                      onTap: () {},
-                      leading: CircleAvatar(
-                        radius: 30.r,
-                        foregroundImage:
-                            CachedNetworkImageProvider(user.profilePic),
-                      ),
-                      title: Text(user.names),
-                      subtitle: Text(_selectedTabTitle),
-                      trailing: const Icon(
-                        Icons.delete_outline,
-                        color: primaryColor,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            )
+            // Container(
+            //   margin: const EdgeInsets.all(5),
+            //   height: 50.h,
+            //   width: double.infinity,
+            //   child: LayoutBuilder(builder: (context, boxConstraints) {
+            //     return Stack(
+            //       children: [
+            //         AnimatedAlign(
+            //           curve: Curves.easeInOut,
+            //           duration: const Duration(milliseconds: 300),
+            //           alignment: _selectedTabTitle == "Teachers"
+            //               ? AlignmentDirectional.centerStart
+            //               : _selectedTabTitle == "Assistants"
+            //                   ? AlignmentDirectional.center
+            //                   : AlignmentDirectional.centerEnd,
+            //           child: TabBarBackgroundContainer(
+            //             boxConstraints: boxConstraints,
+            //           ),
+            //         ),
+            //         CustomTabBarContainer(
+            //           boxConstraints: boxConstraints,
+            //           alignment: AlignmentDirectional.centerStart,
+            //           isSelected: _selectedTabTitle == "Teachers",
+            //           onTap: () {
+            //             setState(() {
+            //               _selectedTabTitle = "Teachers";
+            //             });
+            //           },
+            //           titleKey: "Teachers",
+            //         ),
+            //         CustomTabBarContainer(
+            //           boxConstraints: boxConstraints,
+            //           alignment: AlignmentDirectional.center,
+            //           isSelected: _selectedTabTitle == "Assistants",
+            //           onTap: () {
+            //             setState(() {
+            //               _selectedTabTitle = "Assistants";
+            //             });
+            //           },
+            //           titleKey: "Assistants",
+            //         ),
+            //         CustomTabBarContainer(
+            //           boxConstraints: boxConstraints,
+            //           alignment: AlignmentDirectional.centerEnd,
+            //           isSelected: _selectedTabTitle == "PO Manager",
+            //           onTap: () {
+            //             setState(() {
+            //               _selectedTabTitle = "PO Manager";
+            //             });
+            //           },
+            //           titleKey: "PO Manager",
+            //         ),
+            //       ],
+            //     );
+            //   }),
+            // ),
+            // Column(
+            //   children: []
+            //       .map(
+            //         (user) => ListTile(
+            //           onTap: () {},
+            //           leading: CircleAvatar(
+            //             radius: 30.r,
+            //             foregroundImage:
+            //                 CachedNetworkImageProvider(user.profilePic),
+            //           ),
+            //           title: Text(user.names),
+            //           subtitle: Text(_selectedTabTitle),
+            //           trailing: const Icon(
+            //             Icons.delete_outline,
+            //             color: primaryColor,
+            //           ),
+            //         ),
+            //       )
+            //       .toList(),
+            // )
           ],
         ),
       ),
