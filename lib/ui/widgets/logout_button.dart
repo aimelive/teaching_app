@@ -1,13 +1,18 @@
+import 'package:e_connect_mobile/services/auth_service.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/ui/screens/auth/welcome_screen.dart';
-import 'package:e_connect_mobile/utils/hive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LogoutButton extends StatelessWidget {
+class LogoutButton extends StatefulWidget {
   const LogoutButton({Key? key}) : super(key: key);
 
+  @override
+  State<LogoutButton> createState() => _LogoutButtonState();
+}
+
+class _LogoutButtonState extends State<LogoutButton> {
   void showLogOutDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -17,7 +22,8 @@ class LogoutButton extends StatelessWidget {
                 CupertinoButton(
                     child: const Text("Yes"),
                     onPressed: () async {
-                      await HiveUtils().removeAuth();
+                      await AuthService().logOut();
+                      if(!mounted) return;
                       Navigator.of(context).pop();
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(

@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The app needs to access the gallery to choose a photo</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The app needs to access the camera to take a photo</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
 </dict>
 </plist>

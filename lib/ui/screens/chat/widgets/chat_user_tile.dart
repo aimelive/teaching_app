@@ -42,8 +42,9 @@ class ChatUserTile extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 30.r,
-                foregroundImage:
-                    CachedNetworkImageProvider(user.latestMessage.avatar),
+                foregroundImage: CachedNetworkImageProvider(
+                  user.latestMessage.groupInfo.avatar,
+                ),
               ),
               addHorizontalSpace(10),
               Expanded(
@@ -51,7 +52,7 @@ class ChatUserTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user.latestMessage.name,
+                      user.latestMessage.groupInfo.name,
                       maxLines: 1,
                       style: TextStyle(
                         fontSize: 18.sp,
@@ -85,12 +86,15 @@ class ChatUserTile extends StatelessWidget {
                     ],
                   ),
                   addVerticalSpace(5),
-                  CircleAvatar(
-                    radius: 10.r,
-                    backgroundColor: primaryColor,
-                    foregroundColor: whiteColor,
-                    child: Text(user.unread.toString()),
-                  )
+                  if (user.unread > 0)
+                    CircleAvatar(
+                      radius: 10.r,
+                      backgroundColor: primaryColor,
+                      foregroundColor: whiteColor,
+                      child: Text(
+                        user.unread.toString(),
+                      ),
+                    )
                 ],
               )
             ],

@@ -8,7 +8,7 @@ class Boxes {
 class HiveUtils {
   Box authBox = Hive.box(Boxes.authBox);
 
-  User? getAuth() {
+  UserAccount? getAuth() {
     try {
       final data = authBox.keys.map((key) {
         final value = authBox.get(key);
@@ -43,7 +43,7 @@ class HiveUtils {
     }
   }
 
-  Future<bool> addAuth(String token, User account) async {
+  Future<bool> addAuth(String token, UserAccount account) async {
     try {
       await removeAuth();
       await authBox.add(
@@ -55,7 +55,6 @@ class HiveUtils {
       );
       return true;
     } catch (e) {
-      // print("Sign in failed: ");
       return false;
     }
   }

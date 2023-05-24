@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatCustomAppbar extends StatelessWidget {
+  final VoidCallback onClick;
   const ChatCustomAppbar({
     super.key,
+    required this.onClick,
   });
 
   @override
@@ -28,12 +30,12 @@ class ChatCustomAppbar extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: onClick,
               icon: Icon(
                 Icons.add_circle_outline,
                 size: 26.sp,
               ),
-            )
+            ),
           ],
         ),
       ),

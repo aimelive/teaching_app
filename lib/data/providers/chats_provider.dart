@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/chats.dart';
 import 'package:e_connect_mobile/utils/chat_utils.dart';
+import 'package:e_connect_mobile/utils/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,10 +16,13 @@ class ChatsProvider extends StatefulWidget {
 class _ChatsProviderState extends State<ChatsProvider> {
   final _chatUtils = ChatUtils();
   final _chatsState = Get.put(ChatsState());
+  final _curentUser = HiveUtils().getAuth()?.id;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: _chatUtils.chatsStream,
+        stream:
+            _curentUser == null ? null : _chatUtils.chatsStream(_curentUser!),
         builder: (context, snapshot) {
           bool hasError = snapshot.hasError;
           bool loading = snapshot.connectionState == ConnectionState.waiting;
@@ -40,9 +44,10 @@ class _ChatsProviderState extends State<ChatsProvider> {
               snapshot.data!.docs,
               _chatsState,
               context,
+              _curentUser,
             );
 
-            _chatsState.groupChatsByUser();
+            _chatsState.groupChatsByUser(_curentUser);
           }
 
           return widget.child;

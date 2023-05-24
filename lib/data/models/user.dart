@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-User userFromJson(String str) => User.fromJson(json.decode(str));
+UserAccount userFromJson(String str) => UserAccount.fromJson(json.decode(str));
 
-String userToJson(User data) => json.encode(data.toJson());
+String userToJson(UserAccount data) => json.encode(data.toJson());
 
-class User {
+class UserAccount {
   String id;
   DateTime createdAt;
   DateTime updatedAt;
@@ -24,7 +24,7 @@ class User {
   dynamic tAssistantId;
   Role role;
 
-  User({
+  UserAccount({
     required this.id,
     required this.createdAt,
     required this.updatedAt,
@@ -45,10 +45,14 @@ class User {
     required this.role,
   });
 
-  factory User.fromJson(dynamic json) => User(
+  factory UserAccount.fromJson(dynamic json) => UserAccount(
         id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"].runtimeType == String
+            ? DateTime.parse(json["created_at"])
+            : json["created_at"]?.toDate() ?? DateTime.now(),
+        updatedAt: json["created_at"].runtimeType == String
+            ? DateTime.parse(json["updated_at"])
+            : json["created_at"]?.toDate() ?? DateTime.now(),
         names: json["names"],
         profilePic: json["profile_pic"],
         profilePicId: json["profile_pic_id"],
@@ -103,7 +107,9 @@ class Role {
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
         id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"].runtimeType == String
+            ? DateTime.parse(json["created_at"])
+            : json["created_at"]?.toDate() ?? DateTime.now(),
         name: json["name"],
         status: json["status"],
       );
@@ -116,29 +122,29 @@ class Role {
       };
 }
 
-User dummyUser = User.fromJson({
-  "id": "644f856d16b1b6bf7d68a206",
-  "created_at": "2023-05-01T09:25:01.738Z",
-  "updated_at": "2023-05-01T09:25:01.738Z",
-  "names": "John Doe",
-  "profile_pic":
-      "https://cdn.pixabay.com/photo/2021/04/27/04/19/girl-6210483_1280.jpg",
-  "profile_pic_id": "teaching-app/1682960973820-unitytut-birdwingup.png",
-  "tel": null,
-  "nationality": null,
-  "address": null,
-  "email": "admin",
-  "password": "\$2b\$10\$R5xxYap3XTD1.aRcA01DGeyKxfGF9OghnW349msk9IzsioL8y3tam",
-  "status": true,
-  "role_id": "644d328cc3035c3d6b140f89",
-  "teacher_at_id": null,
-  "PO_at_id": null,
-  "t_assistant_in_class_id": null,
-  "t_assistant_id": null,
-  "role": {
-    "id": "644d328cc3035c3d6b140f89",
-    "created_at": "2023-04-29T15:06:52.536Z",
-    "name": "Administrator",
-    "status": true
-  }
-});
+// UserAccount dummyUser = UserAccount.fromJson({
+//   "id": "644f856d16b1b6bf7d68a206",
+//   "created_at": "2023-05-01T09:25:01.738Z",
+//   "updated_at": "2023-05-01T09:25:01.738Z",
+//   "names": "John Doe",
+//   "profile_pic":
+//       "https://cdn.pixabay.com/photo/2021/04/27/04/19/girl-6210483_1280.jpg",
+//   "profile_pic_id": "teaching-app/1682960973820-unitytut-birdwingup.png",
+//   "tel": null,
+//   "nationality": null,
+//   "address": null,
+//   "email": "admin",
+//   "password": "\$2b\$10\$R5xxYap3XTD1.aRcA01DGeyKxfGF9OghnW349msk9IzsioL8y3tam",
+//   "status": true,
+//   "role_id": "644d328cc3035c3d6b140f89",
+//   "teacher_at_id": null,
+//   "PO_at_id": null,
+//   "t_assistant_in_class_id": null,
+//   "t_assistant_id": null,
+//   "role": {
+//     "id": "644d328cc3035c3d6b140f89",
+//     "created_at": "2023-04-29T15:06:52.536Z",
+//     "name": "Administrator",
+//     "status": true
+//   }
+// });

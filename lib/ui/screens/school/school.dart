@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_connect_mobile/data/models/school.dart';
-import 'package:e_connect_mobile/data/models/user.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/ui/widgets/tab_bar_container.dart';
@@ -136,13 +135,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
               }),
             ),
             Column(
-              children: [
-                dummyUser,
-                dummyUser,
-                dummyUser,
-                dummyUser,
-                dummyUser,
-              ]
+              children: []
                   .map(
                     (user) => ListTile(
                       onTap: () {},

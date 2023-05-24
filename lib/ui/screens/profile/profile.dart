@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final User user;
+  final UserAccount user;
 
   const ProfileScreen({Key? key, required this.user}) : super(key: key);
 
@@ -201,7 +201,6 @@ class CustomBackAppbar extends StatelessWidget {
   const CustomBackAppbar({
     super.key,
     required this.title,
-
   });
 
   @override
@@ -216,10 +215,9 @@ class CustomBackAppbar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
-              onTap: 
-                  () {
-                    popPage(context);
-                  },
+              onTap: () {
+                popPage(context);
+              },
               child: const Icon(Icons.arrow_back_ios),
             ),
             addHorizontalSpace(10),

@@ -12,22 +12,24 @@ class ChatsState extends GetxController {
   RxString error = RxString('');
 
   //Mutations
-  void groupChatsByUser() {
+  void groupChatsByUser(String? currentUser) {
+    if (currentUser == null) return;
     for (ChatMessage chat in chats) {
       try {
         final user = UserChatMessage(
           unread: chats
               .where(
-                (element) => element.senderId == chat.senderId && !element.seen,
+                (el) =>
+                    el.groupInfo.id == chat.groupInfo.id &&
+                    chat.views.contains(currentUser),
               )
               .length,
-          latestMessage: chats.lastWhere(
-            (element) => element.senderId == chat.senderId,
-          ),
+          latestMessage:
+              chats.lastWhere((el) => el.groupInfo.id == chat.groupInfo.id),
         );
 
         final index = chatsByUser.indexWhere(
-          (c) => c.latestMessage.senderId == chat.senderId,
+          (c) => c.latestMessage.groupInfo.id == chat.groupInfo.id,
         );
         if (index == -1) {
           chatsByUser.add(user);

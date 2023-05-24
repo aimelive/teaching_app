@@ -26,14 +26,14 @@ class UserService {
   }
 
   //Getting user account informations
-  Future<User?> getUser(String email, String token) async {
+  Future<UserAccount?> getUser(String email, String token) async {
     try {
       dio.options.headers["Authorization"] = "Bearer $token";
       final result = await dio.get(
         "$backendApiUrl/user/$email",
       );
 
-      return User.fromJson(result.data);
+      return UserAccount.fromJson(result.data);
     } on DioError catch (e) {
       ApiError.dio(e);
       return null;

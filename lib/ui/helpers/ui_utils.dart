@@ -127,6 +127,7 @@ String getIconPath(String iconName) {
 
 List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-getTimeAgo(Timestamp dt) {
-  return timeago.format(dt.toDate(), allowFromNow: true, locale: 'en_short');
+getTimeAgo(Timestamp dt, {bool enshort = true}) {
+  return timeago.format(dt.toDate(),
+      allowFromNow: true, locale: enshort ? 'en_short' : null);
 }

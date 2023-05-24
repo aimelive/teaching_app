@@ -10,30 +10,30 @@ class ChatUtils {
   //Searvice instance
   final _chatsService = ChatsService();
   //Stream service
-  final Stream<QuerySnapshot> chatsStream =
-      FirebaseFirestore.instance.collection('chatMessages').snapshots();
+  Stream<QuerySnapshot> chatsStream(String currentUser) {
+    return FirebaseFirestore.instance
+        .collection('chatMessages')
+        .where('receivers', arrayContains: currentUser)
+        .snapshots();
+  }
 
   void mapChatsToState(List<QueryDocumentSnapshot<Object?>> docs,
-      ChatsState state, BuildContext context) {
+      ChatsState state, BuildContext context, String? currentUser) {
     try {
+      if (currentUser == null) return;
       final chats = docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
         return ChatMessage.fromJson(data);
       });
-
-      final filtered = chats
-          .where((chat) =>
-              chat.receiverId == "mo5LZbbY05Zxnyr7P9Yy" ||
-              chat.senderId == "mo5LZbbY05Zxnyr7P9Yy")
-          .toList();
+      final filtered = chats.toList();
       filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       state.chats.value = filtered;
       state.unread.value = filtered
           .where(
-            (chat) => !chat.seen && chat.receiverId == "mo5LZbbY05Zxnyr7P9Yy",
+            (chat) => /*TODO: Change to not viewed*/
+                chat.views.contains(currentUser),
           )
           .length;
-          
     } catch (e) {
       UiUtils.showCustomSnackBar(
         context: context,

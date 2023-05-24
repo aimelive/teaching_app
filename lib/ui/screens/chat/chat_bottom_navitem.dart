@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/chats.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
-import 'package:e_connect_mobile/utils/chat_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,6 +33,7 @@ class _ChatBottomNavItemState extends State<ChatBottomNavItem> {
         position: badges.BadgePosition.topEnd(),
         child: SvgPicture.asset(
           getIconPath("chat"),
+          // ignore: deprecated_member_use
           color: widget.isActive ? primaryColor : secondaryDark,
         ),
       );
