@@ -142,7 +142,7 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
                       );
                       return;
                     }
-                    _pdf.openFile(generatePdf!);
+                    await _pdf.openFile(generatePdf!);
                     UiUtils.showMessage(
                       title: "Downloaded Schedule",
                       message:

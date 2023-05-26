@@ -28,40 +28,39 @@ class SchoolCard extends StatelessWidget {
           context,
           to: SchoolScreen(school: school),
         ),
-        child: Card(
-          child: Column(
-            children: [
-              ClipRRect(
+        child: Column(
+          children: [
+            Expanded(
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(5.r),
                 child: CachedNetworkImage(
                   imageUrl: school.image,
-                  height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 4.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        school.name.toUpperCase(),
-                        maxLines: 2,
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                        ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 4.h),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      school.name.toUpperCase(),
+                      maxLines: 2,
+                      style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const Icon(
-                      Icons.arrow_right_alt,
-                      color: primaryColor,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  ),
+                  const Icon(
+                    Icons.arrow_right_alt,
+                    color: primaryColor,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

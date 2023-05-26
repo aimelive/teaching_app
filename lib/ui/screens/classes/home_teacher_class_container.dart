@@ -29,81 +29,37 @@ class _TeacherClassesHomeContainerState
           addVerticalSpace(20),
           Container(
             padding: EdgeInsets.only(
-              right: 5.r,
-              left: 20.r,
-              bottom: 4.r,
+              right: 4.r,
+              left: 20.w,
               top: 4.r,
+              bottom: 4.r,
             ),
             decoration: BoxDecoration(
-              color: secondaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(25.r),
+              color: secondaryColor.withOpacity(0.1),
             ),
-            child: TextFormField(
-              style: TextStyle(
-                color: secondaryDark,
-                fontWeight: FontWeight.w600,
-                fontSize: 15.sp,
-              ),
+            child: TextField(
               cursorColor: secondaryColor,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                isDense: true,
+                constraints: BoxConstraints(maxHeight: 40.h),
                 suffixIcon: CircleAvatar(
                   backgroundColor: primaryColor,
-                  child: Icon(Icons.search),
+                  foregroundColor: whiteColor,
+                  child: Icon(
+                    Icons.search,
+                    size: 25.sp,
+                  ),
                 ),
-                hintStyle: TextStyle(color: secondaryDark),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12.h,
+                ),
                 hintText: "Search",
                 border: InputBorder.none,
               ),
             ),
           ),
           addVerticalSpace(20),
-          // Text(
-          //   "May 26, Friday",
-          //   style: TextStyle(
-          //     fontSize: 18.sp,
-          //     fontWeight: FontWeight.w800,
-          //   ),
-          // ),
-          // addVerticalSpace(12),
-          // SizedBox(
-          //   height: 80.h,
-          //   child: ListView.builder(
-          //       scrollDirection: Axis.horizontal,
-          //       itemCount: 5,
-          //       itemBuilder: (context, index) {
-          //         final active = index == 0;
-          //         return Container(
-          //           width: 60.w,
-          //           margin: EdgeInsets.only(left: active ? 0 : 10.w),
-          //           decoration: BoxDecoration(
-          //             color: active
-          //                 ? primaryColor
-          //                 : secondaryColor.withOpacity(0.1),
-          //             borderRadius: BorderRadius.circular(10.r),
-          //           ),
-          //           child: Column(
-          //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //             children: [
-          //               Text(
-          //                 "FRI",
-          //                 style: TextStyle(
-          //                   color: active ? whiteColor : secondaryDark,
-          //                 ),
-          //               ),
-          //               Text(
-          //                 "26",
-          //                 style: TextStyle(
-          //                   fontSize: 20.sp,
-          //                   fontWeight: FontWeight.bold,
-          //                   color: active ? whiteColor : secondaryDark,
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         );
-          //       }),
-          // ),
-          // addVerticalSpace(15),
           Text(
             "Today",
             style: TextStyle(
@@ -111,7 +67,6 @@ class _TeacherClassesHomeContainerState
               fontWeight: FontWeight.w800,
             ),
           ),
-
           addVerticalSpace(5),
           const Align(
             alignment: Alignment.centerRight,

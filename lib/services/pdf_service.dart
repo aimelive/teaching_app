@@ -90,7 +90,7 @@ class PdfService {
     return MemoryImage(bytesData.buffer.asUint8List());
   }
 
-  void openFile(File file) async {
+  Future<void> openFile(File file) async {
     final url = file.path;
     await OpenFile.open(url);
   }
