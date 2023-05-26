@@ -62,7 +62,7 @@ class _HomeContainerState extends State<HomeContainer> {
             ),
             addVerticalSpace(20),
             Text(
-              "Hello, Aime!",
+              "Hello, ${authState.user.value!.names}!",
               style: TextStyle(
                 fontSize: 25.sp,
                 fontWeight: FontWeight.w800,

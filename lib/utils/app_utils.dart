@@ -7,16 +7,19 @@ import 'package:e_connect_mobile/data/controllers/teacher_class.dart';
 import 'package:e_connect_mobile/data/models/school.dart';
 import 'package:e_connect_mobile/data/models/teacher_class.dart';
 import 'package:e_connect_mobile/data/models/user.dart';
+import 'package:e_connect_mobile/data/providers/schools_provider.dart';
 import 'package:e_connect_mobile/services/auth_service.dart';
 import 'package:e_connect_mobile/services/user_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
-import 'package:e_connect_mobile/ui/screens/home/home.dart';
 import 'package:e_connect_mobile/utils/hive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../ui/screens/home/home.dart';
 
 class AppUtils {
   static final userApi = UserService();
@@ -42,7 +45,9 @@ class AppUtils {
           if (mounted) {
             pushReplace(
               context,
-              to: const HomeScreen(),
+              to: const SchoolsProvider(
+                child: HomeScreen(),
+              ),
             );
           }
         }
@@ -129,7 +134,9 @@ class AppUtils {
       filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       state.schools.value = filtered;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       UiUtils.showCustomSnackBar(
         context: context,
         errorMessage: "Something went wrong, $e, restart the app.",

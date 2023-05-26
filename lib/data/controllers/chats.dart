@@ -37,7 +37,7 @@ class ChatsState extends GetxController {
           chatsByUser[index] = user;
         }
       } catch (e) {
-        print(e);
+        // print(e);
       }
     }
   }

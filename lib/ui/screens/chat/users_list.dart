@@ -68,7 +68,7 @@ class _UsersListState extends State<UsersList> {
                         id: "${widget.currentUser.id}+new-group",
                         avatar:
                             "https://cdn.pixabay.com/photo/2016/08/21/16/31/emoticon-1610228_1280.png",
-                        desc: "Group chats",
+                        desc: "Group Messages",
                         name: name,
                       ),
                       senderInfo: ChatWindowInfo(

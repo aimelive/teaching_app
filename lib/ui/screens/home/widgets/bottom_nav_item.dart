@@ -60,6 +60,7 @@ class _BottomNavItemContainerState extends State<BottomNavItemContainer> {
                     )
                   : SvgPicture.asset(
                       widget.bottomNavItem.iconPath,
+                      // ignore: deprecated_member_use
                       color: widget.index == widget.currentIndex
                           ? primaryColor
                           : secondaryDark,

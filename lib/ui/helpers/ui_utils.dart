@@ -4,7 +4,9 @@ import 'package:e_connect_mobile/ui/widgets/error_message_overlay_container.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:url_launcher/url_launcher.dart';
 
 enum MessageType { normal, success, error }
 
@@ -54,11 +56,12 @@ class UiUtils {
     required String message,
     required String title,
     MessageType type = MessageType.normal,
+    SnackPosition position = SnackPosition.TOP,
   }) {
     return Get.snackbar(
       title,
       message,
-      snackPosition: SnackPosition.TOP,
+      snackPosition: position,
       duration: const Duration(seconds: 4),
       backgroundColor: type == MessageType.normal
           ? primaryColor
@@ -67,6 +70,70 @@ class UiUtils {
               : Colors.green.shade400,
       colorText: Colors.white,
     );
+  }
+
+  static Future<XFile?> _pickImage(
+      ImageSource source, BuildContext context) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: source,
+      );
+      if (image == null) return null;
+      return image;
+    } catch (e) {
+      UiUtils.showCustomSnackBar(
+        context: context,
+        errorMessage: e.toString(),
+        backgroundColor: Colors.red,
+      );
+      return null;
+    }
+  }
+
+  static Future<XFile?> selectImage(BuildContext context, bool mounted) async {
+    final source = await showDialog<ImageSource>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [ImageSource.camera, ImageSource.gallery]
+                  .map(
+                    (source) => ListTile(
+                      onTap: () => popPage(context, data: source),
+                      leading: Icon(source == ImageSource.camera
+                          ? Icons.photo_camera_outlined
+                          : Icons.photo_outlined),
+                      title: Text(
+                        source == ImageSource.camera
+                            ? "Take a photo"
+                            : "Choose From Gallery",
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          );
+        });
+    if (source == null || !mounted) return null;
+    final selectedImage = await _pickImage(source, context);
+    if (selectedImage == null || !mounted) return null;
+    return selectedImage;
+  }
+
+  static void unfocus(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
+
+  static Future<void> gotoUrl(String url) async {
+    try {
+      if (!await launchUrl(Uri.parse(url))) {
+        throw Exception('Could not launch $url');
+      }
+    } catch (e) {
+      showMessage(message: e.toString(), title: "Unable to open link.");
+    }
   }
 }
 

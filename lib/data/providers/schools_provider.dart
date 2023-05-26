@@ -50,7 +50,10 @@ class _SchoolsProviderState extends State<SchoolsProvider> {
               _authState.user.value?.id,
             );
           }
-          return TeacherClassesProvider(schools: [], child: widget.child);
+          return TeacherClassesProvider(
+            schools: _schoolState.schools.map((element) => element.id).toList(),
+            child: widget.child,
+          );
         });
   }
 }

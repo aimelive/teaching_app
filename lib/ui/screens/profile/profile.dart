@@ -218,7 +218,10 @@ class CustomBackAppbar extends StatelessWidget {
               onTap: () {
                 popPage(context);
               },
-              child: const Icon(Icons.arrow_back_ios),
+              child: const Icon(
+                Icons.arrow_back_ios,
+                color: whiteColor,
+              ),
             ),
             addHorizontalSpace(10),
             Expanded(
@@ -227,10 +230,10 @@ class CustomBackAppbar extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                    color: whiteColor),
               ),
             ),
             addHorizontalSpace(10),

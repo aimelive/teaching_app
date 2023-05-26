@@ -9,10 +9,12 @@ import '../chat_room.dart';
 
 class ChatUserTile extends StatelessWidget {
   final UserChatMessage user;
+  final String currentUserId;
 
   const ChatUserTile({
     super.key,
     required this.user,
+    required this.currentUserId,
   });
 
   @override
@@ -61,12 +63,51 @@ class ChatUserTile extends StatelessWidget {
                       ),
                     ),
                     addVerticalSpace(5),
-                    Text(
-                      user.latestMessage.message,
-                      maxLines: 1,
-                      style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (user.latestMessage.isGroup)
+                          Row(
+                            children: [
+                              if (user.latestMessage.senderId == currentUserId)
+                                Text(
+                                  "You: ",
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                  ),
+                                )
+                              else
+                                Text(
+                                  "${user.latestMessage.senderInfo.name.split(' ')[0].length < 6 ? user.latestMessage.senderInfo.name.split(' ')[0] : user.latestMessage.senderInfo.name.substring(0, 5)}: ",
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                  ),
+                                )
+                            ],
+                          ),
+                        if (user.latestMessage.image != null)
+                          Container(
+                            margin: EdgeInsets.only(right: 5.w),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(3.r),
+                              child: CachedNetworkImage(
+                                imageUrl: user.latestMessage.image!,
+                                height: 15,
+                                width: 20,
+                              ),
+                            ),
+                          ),
+                        Expanded(
+                          child: Text(
+                            user.latestMessage.message,
+                            maxLines: 1,
+                            style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),

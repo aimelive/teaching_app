@@ -49,7 +49,7 @@ class HiveUtils {
       await authBox.add(
         {
           "authToken": token,
-          "expiredAt": DateTime.now().add(const Duration(days: 5)),
+          "expiredAt": DateTime.now().add(const Duration(days: 30)),
           "account": userToJson(account),
         },
       );

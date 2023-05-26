@@ -4,7 +4,7 @@ class School {
   String name;
   String image;
   String id;
-  String addressLink;
+  Address address;
   String description;
   String? poManager;
   String principalName;
@@ -16,7 +16,7 @@ class School {
   School({
     required this.name,
     required this.image,
-    required this.addressLink,
+    required this.address,
     required this.id,
     required this.description,
     this.poManager,
@@ -27,37 +27,11 @@ class School {
     required this.updatedAt,
   });
 
-  School copyWith({
-    String? name,
-    String? image,
-    String? addressLink,
-    String? description,
-    String? poManager,
-    String? principalName,
-    String? principalPhone,
-    List<String>? teachers,
-    Timestamp? createdAt,
-    Timestamp? updatedAt,
-  }) =>
-      School(
-        name: name ?? this.name,
-        id: id,
-        image: image ?? this.image,
-        addressLink: addressLink ?? this.addressLink,
-        description: description ?? this.description,
-        poManager: poManager ?? this.poManager,
-        principalName: principalName ?? this.principalName,
-        principalPhone: principalPhone ?? this.principalPhone,
-        teachers: teachers ?? this.teachers,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-      );
-
   factory School.fromJson(Map<String, dynamic> json) => School(
         name: json["name"],
         image: json["image"],
         id: json["id"],
-        addressLink: json["addressLink"],
+        address: Address.fromJson(json["address"]),
         description: json["description"],
         poManager: json["poManager"],
         principalName: json["principalName"],
@@ -71,7 +45,7 @@ class School {
         "name": name,
         "image": image,
         "id": id,
-        "addressLink": addressLink,
+        "address": address.toJson(),
         "description": description,
         "poManager": poManager,
         "principalName": principalName,
@@ -80,4 +54,24 @@ class School {
         "createdAt": createdAt,
         "updatedAt": updatedAt,
       };
+}
+
+class Address {
+  String location;
+  String street;
+  String mapLink;
+
+  Address({
+    required this.location,
+    required this.street,
+    required this.mapLink,
+  });
+
+  factory Address.fromJson(Map<String, dynamic> json) => Address(
+      location: json["location"],
+      street: json["street"],
+      mapLink: json["mapLink"]);
+
+  Map<String, dynamic> toJson() =>
+      {"location": location, "street": street, "mapLink": mapLink};
 }

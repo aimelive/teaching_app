@@ -25,7 +25,7 @@ class _TeacherClassesHomeContainerState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           addVerticalSpace(4),
-          Text("You have ${classesState.classes.length} lectures today!"),
+          Text("You have ${classesState.classes.length} class today!"),
           addVerticalSpace(20),
           Container(
             padding: EdgeInsets.only(
@@ -57,53 +57,53 @@ class _TeacherClassesHomeContainerState
             ),
           ),
           addVerticalSpace(20),
-          Text(
-            "Mon 24, Saturday",
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          addVerticalSpace(12),
-          SizedBox(
-            height: 80.h,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  final active = index == 0;
-                  return Container(
-                    width: 60.w,
-                    margin: EdgeInsets.only(left: active ? 0 : 10.w),
-                    decoration: BoxDecoration(
-                      color: active
-                          ? primaryColor
-                          : secondaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "MON",
-                          style: TextStyle(
-                            color: active ? whiteColor : secondaryDark,
-                          ),
-                        ),
-                        Text(
-                          "24",
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.bold,
-                            color: active ? whiteColor : secondaryDark,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-          ),
-          addVerticalSpace(15),
+          // Text(
+          //   "May 26, Friday",
+          //   style: TextStyle(
+          //     fontSize: 18.sp,
+          //     fontWeight: FontWeight.w800,
+          //   ),
+          // ),
+          // addVerticalSpace(12),
+          // SizedBox(
+          //   height: 80.h,
+          //   child: ListView.builder(
+          //       scrollDirection: Axis.horizontal,
+          //       itemCount: 5,
+          //       itemBuilder: (context, index) {
+          //         final active = index == 0;
+          //         return Container(
+          //           width: 60.w,
+          //           margin: EdgeInsets.only(left: active ? 0 : 10.w),
+          //           decoration: BoxDecoration(
+          //             color: active
+          //                 ? primaryColor
+          //                 : secondaryColor.withOpacity(0.1),
+          //             borderRadius: BorderRadius.circular(10.r),
+          //           ),
+          //           child: Column(
+          //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //             children: [
+          //               Text(
+          //                 "FRI",
+          //                 style: TextStyle(
+          //                   color: active ? whiteColor : secondaryDark,
+          //                 ),
+          //               ),
+          //               Text(
+          //                 "26",
+          //                 style: TextStyle(
+          //                   fontSize: 20.sp,
+          //                   fontWeight: FontWeight.bold,
+          //                   color: active ? whiteColor : secondaryDark,
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         );
+          //       }),
+          // ),
+          // addVerticalSpace(15),
           Text(
             "Today",
             style: TextStyle(
@@ -111,7 +111,18 @@ class _TeacherClassesHomeContainerState
               fontWeight: FontWeight.w800,
             ),
           ),
-          addVerticalSpace(12),
+
+          addVerticalSpace(5),
+          const Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              "Afternoon",
+              style: TextStyle(
+                color: secondaryColor,
+              ),
+            ),
+          ),
+          addVerticalSpace(5),
           Column(
             children: classesState.classes
                 .map(

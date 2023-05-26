@@ -28,9 +28,10 @@ class _TeacherClassesProviderState extends State<TeacherClassesProvider> {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('classes')
-            // .where('schoolId', isEqualTo: "wRUop49RYfKUevrXkFcL"
-            //     // whereIn: widget.schools.isEmpty ? ["no-school"] : widget.schools,
-            //     )
+            .where(
+              'schoolId',
+              whereIn: widget.schools.isEmpty ? ["no-school"] : widget.schools,
+            )
             .snapshots(),
         builder: (context, snapshot) {
           bool hasError = snapshot.hasError;

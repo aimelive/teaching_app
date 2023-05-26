@@ -101,7 +101,7 @@ class _ChatContainerState extends State<ChatContainer> {
                   return Column(
                     children: _chatState.chatsByUser
                         .map(
-                          (message) => ChatUserTile(user: message),
+                          (message) => ChatUserTile(user: message,currentUserId:_currentUser.user.value!.id),
                         )
                         .toList(),
                   );

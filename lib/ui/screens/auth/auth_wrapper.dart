@@ -21,7 +21,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
   _init() {
     final account = _hiveDb.getAuth();
     if (account != null) {
-      auth.isSignedIn.value = true;
       auth.user.value = account;
     }
   }
@@ -35,7 +34,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => (auth.isSignedIn.value && (auth.user.value != null))
+      () => (auth.user.value != null)
           ? const SchoolsProvider(
               child: HomeScreen(),
             )

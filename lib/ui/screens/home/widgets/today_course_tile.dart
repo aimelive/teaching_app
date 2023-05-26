@@ -63,7 +63,7 @@ class TodayCourseTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text("${teacherClass.duration} min"),
+                  Text(teacherClass.schoolName),
                 ],
               ),
             ),
@@ -75,7 +75,7 @@ class TodayCourseTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Text(
-                "09:00 - 09:30",
+                "04:00 - 04:40",
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: secondaryColor,

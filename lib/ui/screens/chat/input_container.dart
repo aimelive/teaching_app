@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 
 class InputContainer extends StatefulWidget {
   const InputContainer({super.key, required this.onSend});
@@ -24,28 +22,10 @@ class _InputContainerState extends State<InputContainer> {
   final _radius = BorderRadius.circular(25.r);
   final TextEditingController _textEditingController = TextEditingController();
 
-  final ImagePicker _picker = ImagePicker();
   bool _isUploading = false;
 
   String? uploadedImage;
   Uint8List? currentlyUploading;
-
-  Future<XFile?> _pickImage(ImageSource source) async {
-    try {
-      final XFile? image = await _picker.pickImage(
-        source: source,
-      );
-      if (image == null) return null;
-      return image;
-    } catch (e) {
-      UiUtils.showCustomSnackBar(
-        context: context,
-        errorMessage: e.toString(),
-        backgroundColor: Colors.red,
-      );
-      return null;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,33 +38,9 @@ class _InputContainerState extends State<InputContainer> {
           children: [
             GestureDetector(
               onTap: () async {
-                final source = await showDialog<ImageSource>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [ImageSource.camera, ImageSource.gallery]
-                              .map(
-                                (source) => ListTile(
-                                  onTap: () => popPage(context, data: source),
-                                  leading: Icon(source == ImageSource.camera
-                                      ? Icons.photo_camera_outlined
-                                      : Icons.photo_outlined),
-                                  title: Text(
-                                    source == ImageSource.camera
-                                        ? "Take a photo"
-                                        : "Choose From Gallery",
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      );
-                    });
-                if (source == null) return;
-                final selectedImage = await _pickImage(source);
-                if (selectedImage == null || !mounted) return;
+                final selectedImage =
+                    await UiUtils.selectImage(context, mounted);
+                if (selectedImage == null) return;
                 final bytes = await selectedImage.readAsBytes();
                 setState(() {
                   currentlyUploading = bytes;
@@ -117,33 +73,31 @@ class _InputContainerState extends State<InputContainer> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    child: Row(
-                      children: [
-                        if (_isUploading && currentlyUploading != null)
-                          Container(
-                            height: 80,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              color: secondaryColor,
-                              borderRadius: BorderRadius.circular(5.r),
-                              image: DecorationImage(
-                                image: MemoryImage(currentlyUploading!),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            child: const CustomCircularProgressIndicator(),
-                          ),
-                        if (uploadedImage != null)
-                          ClipRRect(
+                  Row(
+                    children: [
+                      if (_isUploading && currentlyUploading != null)
+                        Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
                             borderRadius: BorderRadius.circular(5.r),
-                            child: CachedNetworkImage(
-                              imageUrl: uploadedImage!,
-                              height: 80,
+                            image: DecorationImage(
+                              image: MemoryImage(currentlyUploading!),
+                              fit: BoxFit.cover,
                             ),
                           ),
-                      ],
-                    ),
+                          child: const CustomCircularProgressIndicator(),
+                        ),
+                      if (uploadedImage != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(5.r),
+                          child: CachedNetworkImage(
+                            imageUrl: uploadedImage!,
+                            height: 80,
+                          ),
+                        ),
+                    ],
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -195,6 +149,7 @@ class _InputContainerState extends State<InputContainer> {
                   angle: 100,
                   child: SvgPicture.asset(
                     getIconPath("send"),
+                    // ignore: deprecated_member_use
                     color: primaryColor,
                   ),
                 ),
