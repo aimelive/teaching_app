@@ -4,21 +4,24 @@ import 'package:flutter/material.dart';
 class ErrorMessageOverlayContainer extends StatefulWidget {
   final String errorMessage;
   final Color backgroundColor;
-  const ErrorMessageOverlayContainer(
-      {Key? key, required this.errorMessage, required this.backgroundColor})
-      : super(key: key);
+
+  const ErrorMessageOverlayContainer({
+    Key? key,
+    required this.errorMessage,
+    required this.backgroundColor,
+  }) : super(key: key);
 
   @override
-  _ErrorMessageOverlayContainerState createState() =>
+  State<ErrorMessageOverlayContainer> createState() =>
       _ErrorMessageOverlayContainerState();
 }
 
 class _ErrorMessageOverlayContainerState
     extends State<ErrorMessageOverlayContainer>
     with SingleTickerProviderStateMixin {
-  late AnimationController animationController =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
-        ..forward();
+  late AnimationController animationController = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 500))
+    ..forward();
 
   late Animation<double> slideAnimation = Tween<double>(begin: -0.5, end: 1.0)
       .animate(CurvedAnimation(
@@ -55,24 +58,30 @@ class _ErrorMessageOverlayContainerState
             opacity: slideAnimation.value < 0.0 ? 0.0 : slideAnimation.value,
             child: Material(
               type: MaterialType.transparency,
-              child: Container(
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width * (0.8),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                decoration: BoxDecoration(
-                    color: widget.backgroundColor,
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: Text(
-                  widget.errorMessage,
-                  style: TextStyle(
-                      fontSize: 13.5,
-                      color: Theme.of(context).scaffoldBackgroundColor),
-                ),
-               
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width * (0.8),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 8),
+                    decoration: BoxDecoration(
+                        color: widget.backgroundColor,
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: Text(
+                      widget.errorMessage,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        
         );
       },
     );

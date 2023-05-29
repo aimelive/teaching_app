@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/chats.dart';
 import 'package:e_connect_mobile/data/models/chat.dart';
-import 'package:e_connect_mobile/services/chat_service.dart';
+import 'package:e_connect_mobile/services/app_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
+import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
 class ChatUtils {
   //Searvice instance
-  final _chatsService = ChatsService();
+  final _chatsService = AppService();
   //Stream service
   Stream<QuerySnapshot> chatsStream(String currentUser) {
-    return FirebaseFirestore.instance
-        .collection('chatMessages')
+    return Collection.chat
         .where('receivers', arrayContains: currentUser)
         .snapshots();
   }
@@ -23,15 +23,14 @@ class ChatUtils {
       if (currentUser == null) return;
       final chats = docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-        return ChatMessage.fromJson(data);
+        return ChatMessage.fromJson(data, document.id);
       });
       final filtered = chats.toList();
       filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       state.chats.value = filtered;
       state.unread.value = filtered
           .where(
-            (chat) => /*TODO: Change to not viewed*/
-                chat.views.contains(currentUser),
+            (chat) => !chat.views.contains(currentUser),
           )
           .length;
     } catch (e) {
@@ -55,6 +54,12 @@ class ChatUtils {
         errorMessage: "Sending message failed: $result",
         backgroundColor: secondaryColor,
       );
+    }
+  }
+
+  void markMessagesAsRead(List<String> messages, String currentUser) async {
+    for (String messageId in messages) {
+      await _chatsService.markMessageAsRead(messageId, currentUser);
     }
   }
 }

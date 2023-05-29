@@ -69,7 +69,10 @@ class TimeTableClassTile extends StatelessWidget {
                       addHorizontalSpace(5),
                       Expanded(
                         child: Text(
-                          "04:10 PM - 04:50 PM",
+                          UiUtils.time(
+                            teacherClass.date,
+                            teacherClass.duration,
+                          ),
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.w600,

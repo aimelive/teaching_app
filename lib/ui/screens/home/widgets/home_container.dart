@@ -69,6 +69,7 @@ class _HomeContainerState extends State<HomeContainer> {
               ),
             ),
             const TeacherClassesHomeContainer(),
+            addVerticalSpace(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -79,23 +80,44 @@ class _HomeContainerState extends State<HomeContainer> {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: TextButton.icon(
-                    icon: const Icon(
-                      Icons.arrow_right_alt,
-                      color: primaryColor,
-                    ),
-                    onPressed: () {},
-                    label: const Text(
-                      "View More",
+                if (schoolState.schools.length > 3)
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: TextButton.icon(
+                      icon: const Icon(
+                        Icons.arrow_right_alt,
+                        color: primaryColor,
+                      ),
+                      onPressed: () {},
+                      label: const Text(
+                        "View More",
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
-            addVerticalSpace(12),
+            addVerticalSpace(15),
             Obx(() {
+              if (schoolState.schools.isEmpty) {
+                return Center(
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.error_outline_outlined,
+                        size: 30.sp,
+                        color: secondaryColor,
+                      ),
+                      addVerticalSpace(10),
+                      Text(
+                        "Yet, there are no school assigned to you!",
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
               return SizedBox(
                 height: 160.h,
                 child: ListView.builder(
@@ -110,20 +132,6 @@ class _HomeContainerState extends State<HomeContainer> {
                     }),
               );
             }),
-            // addVerticalSpace(12),
-            // SizedBox(
-            //   height: 160.h,
-            //   child: ListView.builder(
-            //       itemCount: School.schools.length,
-            //       scrollDirection: Axis.horizontal,
-            //       itemBuilder: (context, index) {
-            //         final active = index == 0;
-            //         return SchoolCard(
-            //           active: active,
-            //           school: School.schools[index],
-            //         );
-            //       }),
-            // ),
             addVerticalSpace(12),
           ],
         ),

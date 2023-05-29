@@ -119,7 +119,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                       MediaQuery.of(context).size.width *
                                           (0.1)),
                               child: const Text(
-                                "E-connect serves you virtual education at you home",
+                                "E-connect serves you the virtual education at your home",
                                 textAlign: TextAlign.center,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,

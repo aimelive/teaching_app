@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/auth.dart';
 import 'package:e_connect_mobile/data/controllers/teacher_class.dart';
 import 'package:e_connect_mobile/utils/app_utils.dart';
@@ -26,8 +25,7 @@ class _TeacherClassesProviderState extends State<TeacherClassesProvider> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('classes')
+        stream: Collection.classes
             .where(
               'schoolId',
               whereIn: widget.schools.isEmpty ? ["no-school"] : widget.schools,

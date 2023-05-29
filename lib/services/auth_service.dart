@@ -1,12 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/models/user.dart';
+import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:e_connect_mobile/utils/exception.dart';
 import 'package:e_connect_mobile/utils/hive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _users = FirebaseFirestore.instance.collection('users');
+  final _users = Collection.user;
 
   Stream<User?> get user {
     return _auth.authStateChanges().map((user) => user);
@@ -42,12 +42,16 @@ class AuthService {
   Future getUser(String uid) async {
     try {
       final document = await _users.doc(uid).get();
+      if (document.data() == null) {
+        return "User profile not found!";
+      }
       Map<String, dynamic> data = document.data()!;
+
       return UserAccount.fromJson(data);
     } on FirebaseAuthException catch (e) {
       return e.message;
     } catch (error) {
-      return ApiError.unknown(error);
+      return error.toString();
     }
   }
 

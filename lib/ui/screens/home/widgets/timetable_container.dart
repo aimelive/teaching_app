@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/teacher_class.dart';
 import 'package:e_connect_mobile/services/pdf_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
@@ -18,14 +19,28 @@ class TimeTableContainer extends StatefulWidget {
 }
 
 class _TimeTableContainerState extends State<TimeTableContainer> {
-  late int _currentSelectedDayIndex = DateTime.now().weekday - 1;
+  DateTime currentDate = DateTime.now();
+  late int _currentSelectedDayIndex = currentDate.weekday - 1;
   final _classesState = Get.find<TeacherClassesState>();
   final _pdf = PdfService();
 
   Widget _buildDayContainer(int index) {
     return InkWell(
       onTap: () {
+        if (index == _currentSelectedDayIndex) return;
+        if (index < _currentSelectedDayIndex) {
+          setState(() {
+            currentDate = currentDate.subtract(
+              Duration(days: _currentSelectedDayIndex - index),
+            );
+            _currentSelectedDayIndex = index;
+          });
+          return;
+        }
         setState(() {
+          currentDate = currentDate.add(
+            Duration(days: index - _currentSelectedDayIndex),
+          );
           _currentSelectedDayIndex = index;
         });
       },
@@ -98,6 +113,43 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
             ),
           ),
           addVerticalSpace(10),
+          Obx(() {
+            final thisWeek = _classesState.classes
+                .where((trClass) => UiUtils.isThisWeek(trClass.date.toDate()))
+                .length;
+            final thisMonth = _classesState.classes
+                .where((trClass) => UiUtils.isThisMonth(trClass.date.toDate()))
+                .length;
+            return Container(
+              padding: EdgeInsets.all(12.r),
+              decoration: BoxDecoration(
+                color: secondaryColor,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "This week: ${thisWeek == 0 ? "no class" : thisWeek == 1 ? "1 class" : "$thisWeek classes"}",
+                    style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: whiteColor),
+                  ),
+                  addVerticalSpace(5),
+                  Text(
+                    "This month: ${thisMonth == 0 ? "no class" : thisMonth == 1 ? "1 class" : "$thisMonth classes"}",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: whiteColor,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+          addVerticalSpace(15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -105,17 +157,25 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
                 onTap: () {
                   showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
+                    initialDate: currentDate,
+                    firstDate: DateTime(2020),
                     lastDate: DateTime(2050),
-                  );
+                  ).then((value) {
+                    if (value == null) return;
+                    setState(() {
+                      currentDate = value;
+                      _currentSelectedDayIndex = value.weekday - 1;
+                    });
+                  });
                 },
                 child: Row(
                   children: [
                     const Icon(Icons.calendar_month),
                     addHorizontalSpace(10),
                     Text(
-                      "26 May 2023",
+                      UiUtils.date(
+                        Timestamp.fromDate(currentDate),
+                      ),
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
@@ -170,23 +230,42 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
             ],
           ),
           addVerticalSpace(15),
-          Text(
-            "Total Hours this week: 2 hours",
-            style: TextStyle(fontSize: 16.sp),
-          ),
-          addVerticalSpace(5),
-          Text(
-            "Total Hours this month: 2 hours",
-            style: TextStyle(fontSize: 16.sp),
-          ),
-          addVerticalSpace(15),
           _buildDays(),
           SizedBox(
             height: MediaQuery.of(context).size.height * (0.025),
           ),
           Obx(() {
+            final currentDayClasses = _classesState.classes.where(
+              (trClass) => UiUtils.equalDays(
+                trClass.date.toDate(),
+                currentDate,
+              ),
+            );
+            if (currentDayClasses.isEmpty) {
+              return Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.campaign,
+                      size: 50.sp,
+                      color: primaryColor,
+                    ),
+                    addVerticalSpace(10),
+                    Text(
+                      "There are no class assigned on ${weekDaysFull[_currentSelectedDayIndex]}, ${UiUtils.date(Timestamp.fromDate(currentDate))}.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: secondaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
             return Column(
-              children: _classesState.classes
+              children: currentDayClasses
                   .map(
                     (trClass) => TimeTableClassTile(
                       teacherClass: trClass,

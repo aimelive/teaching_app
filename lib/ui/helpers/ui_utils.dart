@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/widgets/error_message_overlay_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,11 +38,12 @@ class UiUtils {
     return result;
   }
 
-  static Future<void> showCustomSnackBar(
-      {required BuildContext context,
-      required String errorMessage,
-      required Color backgroundColor,
-      Duration delayDuration = errorMessageDisplayDuration}) async {
+  static Future<void> showCustomSnackBar({
+    required BuildContext context,
+    required String errorMessage,
+    required Color backgroundColor,
+    Duration delayDuration = errorMessageDisplayDuration,
+  }) async {
     OverlayState? overlayState = Overlay.of(context);
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (context) => ErrorMessageOverlayContainer(
@@ -135,6 +140,103 @@ class UiUtils {
       showMessage(message: e.toString(), title: "Unable to open link.");
     }
   }
+
+  static String date(Timestamp date) {
+    return DateFormat('dd MMM yyyy').format(
+      date.toDate(),
+    );
+  }
+
+  static String time(Timestamp time, int duration,
+      {bool removeSuffix = false}) {
+    final frmt = DateFormat(removeSuffix ? 'hh:mm' : 'hh:mm a');
+    return "${frmt.format(time.toDate())} - ${frmt.format(
+      time.toDate().add(
+            Duration(
+              minutes: duration,
+            ),
+          ),
+    )}";
+  }
+
+  static bool isToday(DateTime dateTime) {
+    DateTime now = DateTime.now();
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      return true;
+    }
+    return false;
+  }
+
+  static bool isThisMonth(DateTime dateTime) {
+    DateTime now = DateTime.now();
+    if (dateTime.year == now.year && dateTime.month == now.month) {
+      return true;
+    }
+    return false;
+  }
+
+  static bool isThisWeek(DateTime dateTime) {
+    DateTime now = DateTime.now();
+    int currentWeekDay = now.weekday;
+    DateTime startDate = now.subtract(
+      Duration(days: currentWeekDay),
+    );
+    DateTime endDate = startDate.add(
+      const Duration(days: 7),
+    );
+    bool isWithinRange =
+        dateTime.isAfter(startDate) && dateTime.isBefore(endDate);
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        isWithinRange) {
+      return true;
+    }
+    return false;
+  }
+
+  static bool equalDays(DateTime dateTime1, DateTime dateTime2) {
+    if (dateTime1.year == dateTime2.year &&
+        dateTime1.month == dateTime2.month &&
+        dateTime1.day == dateTime2.day) {
+      return true;
+    }
+    return false;
+  }
+
+  static String dateStatus(Timestamp date) {
+    DateTime dateTime = date.toDate();
+    DateTime now = DateTime.now();
+
+    if (isToday(dateTime)) {
+      return 'Today';
+    }
+
+    if (dateTime.isBefore(now)) {
+      return timeago.format(dateTime);
+    }
+
+    Duration remainingTime = dateTime.difference(now);
+    int remainingDays = remainingTime.inDays;
+    return '$remainingDays days remaining';
+  }
+
+  //Copying to clipboard
+  static Future<void> copyToClipboard(BuildContext context, bool mounted,
+      {required String text}) async {
+    await Clipboard.setData(
+      ClipboardData(
+        text: text,
+      ),
+    );
+    if (!mounted) return;
+    showCustomSnackBar(
+      context: context,
+      errorMessage: "Copied to clipboard!",
+      backgroundColor: secondaryColor,
+    );
+  }
 }
 
 /// Navigating to another page by material page route
@@ -162,8 +264,8 @@ dynamic pushReplace(BuildContext context,
 }
 
 /// Popping the current material page route from the queue
-void popPage(BuildContext context, {dynamic data}) =>
-    Navigator.pop(context, data);
+void popPage<T>(BuildContext context, {dynamic data}) =>
+    Navigator.pop<T>(context, data);
 
 /// Adding horizontal space in a row
 SizedBox addHorizontalSpace(double width) {
@@ -193,8 +295,33 @@ String getIconPath(String iconName) {
 }
 
 List<String> weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+List<String> weekDaysFull = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
+];
 
 getTimeAgo(Timestamp dt, {bool enshort = true}) {
-  return timeago.format(dt.toDate(),
-      allowFromNow: true, locale: enshort ? 'en_short' : null);
+  return timeago.format(
+    dt.toDate(),
+    allowFromNow: true,
+    locale: enshort ? 'en_short' : null,
+  );
+}
+
+String uniqueId() {
+  int size = 28;
+  Random random = Random.secure();
+  String alphabet =
+      'ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW';
+  int len = alphabet.length;
+  String id = '';
+  while (0 < size--) {
+    id += alphabet[random.nextInt(len)];
+  }
+  return id;
 }

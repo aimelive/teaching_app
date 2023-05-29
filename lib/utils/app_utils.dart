@@ -8,6 +8,7 @@ import 'package:e_connect_mobile/data/models/school.dart';
 import 'package:e_connect_mobile/data/models/teacher_class.dart';
 import 'package:e_connect_mobile/data/models/user.dart';
 import 'package:e_connect_mobile/data/providers/schools_provider.dart';
+import 'package:e_connect_mobile/services/app_service.dart';
 import 'package:e_connect_mobile/services/auth_service.dart';
 import 'package:e_connect_mobile/services/user_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
@@ -21,21 +22,47 @@ import 'package:get/get.dart';
 
 import '../ui/screens/home/home.dart';
 
+typedef OnLoading = void Function(bool val);
+
+class Collection {
+  //Constant collection Ids/paths
+  static const userCollectionId = 'users';
+  static const schoolCollectionId = 'schools';
+  static const chatCollectionId = 'chatMessages';
+  static const feedbackCollectionId = 'feedbacks';
+  static const classesCollectionId = 'classes';
+
+  //Getting collection refrence from path
+  static CollectionReference<Map<String, dynamic>> collection(String path) {
+    final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+    return fireStore.collection(path);
+  }
+
+  //Collection refrences
+  static final user = collection(userCollectionId);
+  static final chat = collection(chatCollectionId);
+  static final school = collection(schoolCollectionId);
+  static final classes = collection(classesCollectionId);
+  static final feedback = collection(feedbackCollectionId);
+}
+
 class AppUtils {
   static final userApi = UserService();
   static final hiveUtil = HiveUtils();
   static final authService = AuthService();
+  static final appService = AppService();
 
   static void login(
     BuildContext context,
     bool mounted, {
     required String email,
     required String pwd,
-    required void Function(bool val) onLoading,
+    required OnLoading onLoading,
   }) async {
     onLoading(true);
     final authState = Get.find<AuthState>();
     final result = await authService.signIn(email, pwd);
+
     if (result.runtimeType == User) {
       User user = result;
       final resp = await authService.getUser(user.uid);
@@ -55,7 +82,7 @@ class AppUtils {
         if (!mounted) return;
         UiUtils.showCustomSnackBar(
           context: context,
-          errorMessage: result.toString(),
+          errorMessage: resp ?? "Something went wrong, please try again.",
           backgroundColor: primaryColor,
         );
       }
@@ -74,7 +101,7 @@ class AppUtils {
     BuildContext context,
     bool mounted, {
     required String email,
-    required void Function(bool val) onLoading,
+    required OnLoading onLoading,
   }) async {
     onLoading(true);
     final result = await authService.forgotPassword(email);
@@ -100,7 +127,7 @@ class AppUtils {
     BuildContext context,
     String message,
     File image, {
-    required void Function(bool val) onLoading,
+    required OnLoading onLoading,
     required void Function(String val) onSuccess,
   }) async {
     onLoading(true);
@@ -145,8 +172,12 @@ class AppUtils {
     }
   }
 
-  void mapClassesToState(List<QueryDocumentSnapshot<Object?>> docs,
-      TeacherClassesState state, BuildContext context, String? currentUser) {
+  void mapClassesToState(
+    List<QueryDocumentSnapshot<Object?>> docs,
+    TeacherClassesState state,
+    BuildContext context,
+    String? currentUser,
+  ) {
     try {
       if (currentUser == null) return;
       final classes = docs.map((DocumentSnapshot document) {
@@ -154,8 +185,11 @@ class AppUtils {
         return TeacherClass.fromJson(data);
       });
       final filtered = classes.toList();
-      filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      filtered.sort((a, b) => a.date.compareTo(b.date));
       state.classes.value = filtered;
+      state.todayClasses.value = filtered
+          .where((trClass) => UiUtils.isToday(trClass.date.toDate()))
+          .toList();
     } catch (e) {
       UiUtils.showCustomSnackBar(
         context: context,
@@ -163,5 +197,38 @@ class AppUtils {
         backgroundColor: secondaryColor,
       );
     }
+  }
+
+  Future<bool> addFeedback(
+    BuildContext context,
+    bool mounted, {
+    required String classId,
+    required String feedback,
+    required int rate,
+    required OnLoading onLoading,
+  }) async {
+    UiUtils.unfocus(context);
+    onLoading(true);
+    final result = await appService.addFeedback({
+      "classId": classId,
+      "feedback": feedback,
+      "rate": rate,
+      "to": "Teacher Assistant",
+    });
+    onLoading(false);
+    if (result != true && result.runtimeType == String && mounted) {
+      UiUtils.showCustomSnackBar(
+        context: context,
+        errorMessage: "Adding feedback failed: $result",
+        backgroundColor: secondaryColor,
+      );
+      return false;
+    }
+    UiUtils.showMessage(
+      message:
+          "Your feedback to teacher assistant has sent to the chief manager successfully,",
+      title: "Feedback sent!",
+    );
+    return true;
   }
 }

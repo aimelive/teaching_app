@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:e_connect_mobile/data/models/user.dart';
 import 'package:e_connect_mobile/utils/exception.dart';
 import '../utils/keys.dart';
 
@@ -26,20 +25,20 @@ class UserService {
   }
 
   //Getting user account informations
-  Future<UserAccount?> getUser(String email, String token) async {
-    try {
-      dio.options.headers["Authorization"] = "Bearer $token";
-      final result = await dio.get(
-        "$backendApiUrl/user/$email",
-      );
+  // Future<UserAccount?> getUser(String email, String token) async {
+  //   try {
+  //     dio.options.headers["Authorization"] = "Bearer $token";
+  //     final result = await dio.get(
+  //       "$backendApiUrl/user/$email",
+  //     );
 
-      return UserAccount.fromJson(result.data);
-    } on DioError catch (e) {
-      ApiError.dio(e);
-      return null;
-    } catch (e) {
-      ApiError.unknown(e);
-      return null;
-    }
-  }
+  //     return UserAccount.fromJson(result.data,"");
+  //   } on DioError catch (e) {
+  //     ApiError.dio(e);
+  //     return null;
+  //   } catch (e) {
+  //     ApiError.unknown(e);
+  //     return null;
+  //   }
+  // }
 }

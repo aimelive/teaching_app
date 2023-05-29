@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/auth.dart';
 import 'package:e_connect_mobile/data/controllers/school.dart';
 import 'package:e_connect_mobile/data/providers/classes_provider.dart';
@@ -22,8 +21,7 @@ class _SchoolsProviderState extends State<SchoolsProvider> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('schools')
+        stream: Collection.school
             .where('teachers', arrayContains: _authState.user.value?.id)
             .snapshots(),
         builder: (context, snapshot) {

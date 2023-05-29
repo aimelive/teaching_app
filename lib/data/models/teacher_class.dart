@@ -5,12 +5,10 @@ class TeacherClass {
   String name;
   String room;
   int duration;
-  List<String> images;
   List<LessonFile> files;
   String schoolId;
   String schoolName;
   String? trAssistantId;
-  String? feedbackId;
   String teacherId;
   Timestamp date;
   Timestamp createdAt;
@@ -22,10 +20,8 @@ class TeacherClass {
     required this.duration,
     required this.room,
     required this.files,
-    required this.images,
     required this.schoolId,
     required this.schoolName,
-    this.feedbackId,
     this.trAssistantId,
     required this.teacherId,
     required this.date,
@@ -42,11 +38,9 @@ class TeacherClass {
           ),
         ),
         duration: json["duration"],
-        images: List<String>.from(json["images"].map((x) => x)),
         schoolId: json["schoolId"],
         schoolName: json["schoolName"],
         room: json["room"],
-        feedbackId: json["feedbackId"],
         trAssistantId: json["trAssistantId"],
         teacherId: json["teacherId"],
         date: json["date"],

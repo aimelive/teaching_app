@@ -47,7 +47,8 @@ class _ChatsProviderState extends State<ChatsProvider> {
               _curentUser,
             );
 
-            _chatsState.groupChatsByUser(_curentUser);
+            _chatsState.chatsByUser.value =
+                _chatsState.groupChatsByUser(_curentUser);
           }
 
           return widget.child;

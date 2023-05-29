@@ -19,13 +19,19 @@ class ChatUserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool iAmReceiver = user.latestMessage.senderId != currentUserId &&
+        !user.latestMessage.isGroup;
+    bool isMe = user.latestMessage.senderId == currentUserId;
+    bool hasViewed = isMe &&
+        user.latestMessage.views.length == user.latestMessage.receivers.length;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       child: InkWell(
-        onTap: () => pushPage(context,
-            to: ChatRoom(
-              user: user,
-            )),
+        onTap: () => pushPage(
+          context,
+          to: ChatRoom(user: user),
+        ),
         borderRadius: BorderRadius.circular(12.r),
         child: Ink(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
@@ -45,7 +51,9 @@ class ChatUserTile extends StatelessWidget {
               CircleAvatar(
                 radius: 30.r,
                 foregroundImage: CachedNetworkImageProvider(
-                  user.latestMessage.groupInfo.avatar,
+                  iAmReceiver
+                      ? user.latestMessage.senderInfo.avatar
+                      : user.latestMessage.groupInfo.avatar,
                 ),
               ),
               addHorizontalSpace(10),
@@ -54,7 +62,9 @@ class ChatUserTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user.latestMessage.groupInfo.name,
+                      iAmReceiver
+                          ? user.latestMessage.senderInfo.name
+                          : user.latestMessage.groupInfo.name,
                       maxLines: 1,
                       style: TextStyle(
                         fontSize: 18.sp,
@@ -82,7 +92,7 @@ class ChatUserTile extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                   ),
-                                )
+                                ),
                             ],
                           ),
                         if (user.latestMessage.image != null)
@@ -99,7 +109,12 @@ class ChatUserTile extends StatelessWidget {
                           ),
                         Expanded(
                           child: Text(
-                            user.latestMessage.message,
+                            (hasViewed
+                                    ? "✓ "
+                                    : isMe
+                                        ? "⌑ "
+                                        : "") +
+                                user.latestMessage.message,
                             maxLines: 1,
                             style: TextStyle(
                               overflow: TextOverflow.ellipsis,

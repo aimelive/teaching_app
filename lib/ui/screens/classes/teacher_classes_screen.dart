@@ -1,12 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_connect_mobile/data/models/school.dart';
 import 'package:e_connect_mobile/data/models/teacher_class.dart';
-import 'package:e_connect_mobile/data/providers/single_school_provider.dart';
+import 'package:e_connect_mobile/data/providers/stream_provider.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
-import 'package:e_connect_mobile/ui/screens/classes/widgets/feedback_form.dart';
+import 'package:e_connect_mobile/ui/screens/classes/widgets/class_assistant.dart';
 import 'package:e_connect_mobile/ui/screens/classes/widgets/school_info_tile.dart';
 import 'package:e_connect_mobile/ui/screens/profile/profile.dart';
 import 'package:e_connect_mobile/ui/widgets/custom_blur_widget.dart';
+import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,7 +20,6 @@ class TeacherClassesScreen extends StatefulWidget {
 }
 
 class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
-  bool _showFeebackForm = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,18 +45,23 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                       radius: 50.r,
                       backgroundColor: primaryColor,
                       foregroundColor: whiteColor,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.alarm_on),
-                          addVerticalSpace(5),
-                          const Text(
-                            "Today",
-                            style: TextStyle(
-                              color: whiteColor,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.r),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.alarm_on),
+                            addVerticalSpace(5),
+                            Text(
+                              UiUtils.dateStatus(widget.teacherClass.date),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: whiteColor,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     addVerticalSpace(10),
@@ -91,7 +96,7 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                                 borderRadius: BorderRadius.circular(5.r),
                               ),
                               child: Text(
-                                "26 May 2023",
+                                UiUtils.date(widget.teacherClass.date),
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: whiteColor,
@@ -129,7 +134,10 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                                 borderRadius: BorderRadius.circular(5.r),
                               ),
                               child: Text(
-                                "04:00 PM - 04:40 PM",
+                                UiUtils.time(
+                                  widget.teacherClass.date,
+                                  widget.teacherClass.duration,
+                                ),
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: whiteColor,
@@ -162,19 +170,17 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                     ),
                   ),
                   addVerticalSpace(15),
-                  SingleSchoolProvider(
+                  StreamProvider<School>(
+                    collectionId: Collection.schoolCollectionId,
+                    docId: widget.teacherClass.schoolId,
+                    fromJson: (json) => School.fromJson(json),
                     onError: (error) => Text(error),
                     loading: const Text("Loading..."),
                     onSuccess: (school) => SchoolInfoTile(
                       school: school,
                       room: widget.teacherClass.room,
                     ),
-                    schoolId: widget.teacherClass.schoolId,
                   ),
-                  // LessonsImages(
-                  //   images: widget.teacherClass.images,
-                  //   classId: widget.teacherClass.id,
-                  // ),
                   addVerticalSpace(10),
                   Text(
                     "Lessons Files",
@@ -218,13 +224,19 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                                 ],
                               ),
                               child: Column(
-                                // mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  CachedNetworkImage(
-                                    imageUrl:
-                                        "https://1000logos.net/wp-content/uploads/2020/08/Google-Drive-Logo-2012.png",
-                                    height: 60,
-                                    width: 60,
+                                  Image.asset(
+                                    getImagePath(
+                                      file.link.contains('/presentation/')
+                                          ? 'ppt.png'
+                                          : file.link.contains('/document/')
+                                              ? 'doc.png'
+                                              : 'drive.png',
+                                    ),
+                                    height: 50,
+                                    width: 50,
                                   ),
                                   Text(
                                     file.title,
@@ -244,96 +256,11 @@ class _TeacherClassesScreenState extends State<TeacherClassesScreen> {
                       },
                     ),
                   ),
-                  addVerticalSpace(20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Class Assistant",
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w800,
-                          color: primaryColor,
-                        ),
-                      ),
-                      addVerticalSpace(5),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: CircleAvatar(
-                          radius: 25.r,
-                          foregroundImage: const CachedNetworkImageProvider(
-                            "https://cdn.pixabay.com/photo/2023/05/20/12/43/clubtail-dragonfly-8006480_640.jpg",
-                          ),
-                        ),
-                        title: const Text("Aime Ndayambaje"),
-                        subtitle: const Text("Teacher Assistant"),
-                        trailing: GestureDetector(
-                          onTap: () => setState(
-                              () => _showFeebackForm = !_showFeebackForm),
-                          child: Icon(
-                            Icons.forum_outlined,
-                            color: _showFeebackForm ? primaryColor : null,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (_showFeebackForm)
-                    FeedBackForm(
-                      onClose: () => setState(() => _showFeebackForm = false),
+                  if (widget.teacherClass.trAssistantId != null)
+                    ClassAssistantWidget(
+                      classId: widget.teacherClass.id,
+                      trAssistantId: widget.teacherClass.trAssistantId!,
                     ),
-                  addVerticalSpace(15),
-                  // Text(
-                  //   "Feedbacks",
-                  //   style: TextStyle(
-                  //     fontSize: 18.sp,
-                  //     fontWeight: FontWeight.w800,
-                  //     color: primaryColor,
-                  //   ),
-                  // ),
-                  // addVerticalSpace(15),
-                  // Column(
-                  //   children: ["Teacher", "Assistant"]
-                  //       .map((feeback) => Container(
-                  //             padding: EdgeInsets.all(12.r),
-                  //             margin: EdgeInsets.only(bottom: 10.h),
-                  //             decoration: BoxDecoration(
-                  //               color: secondaryColor.withOpacity(0.1),
-                  //               borderRadius: BorderRadius.circular(12.r),
-                  //             ),
-                  //             child: Row(
-                  //               children: [
-                  //                 Expanded(
-                  //                   child: Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       Row(
-                  //                         children: [
-                  //                           Text(
-                  //                             feeback,
-                  //                             style: TextStyle(
-                  //                               fontSize: 18.sp,
-                  //                               fontWeight: FontWeight.w500,
-                  //                             ),
-                  //                           ),
-                  //                           addHorizontalSpace(5),
-                  //                           const RateStarsWidget(value: 3)
-                  //                         ],
-                  //                       ),
-                  //                       addVerticalSpace(5),
-                  //                       const Text(
-                  //                         "Lorem ipsum dolor isit,ipsum dolor isit,ipsum dolor isit isit,ipsum dolor isit, isit,ipsum dolor isit isit,ipsum dolor isit isit,ipsum dolor isit",
-                  //                       ),
-                  //                     ],
-                  //                   ),
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ))
-                  //       .toList(),
-                  // ),
-                  // addVerticalSpace(15),
                 ],
               ),
             ),

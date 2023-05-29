@@ -188,6 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Column(children: [
         const CustomBackAppbar(
           title: "Profile",
+          color: Colors.black,
         ),
         _buildProfileDetailsContainer(),
       ]),
@@ -197,10 +198,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 class CustomBackAppbar extends StatelessWidget {
   final String title;
+  final Color color;
 
   const CustomBackAppbar({
     super.key,
     required this.title,
+    this.color = whiteColor,
   });
 
   @override
@@ -218,9 +221,9 @@ class CustomBackAppbar extends StatelessWidget {
               onTap: () {
                 popPage(context);
               },
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios,
-                color: whiteColor,
+                color: color,
               ),
             ),
             addHorizontalSpace(10),
@@ -230,10 +233,11 @@ class CustomBackAppbar extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    overflow: TextOverflow.ellipsis,
-                    color: whiteColor),
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  overflow: TextOverflow.ellipsis,
+                  color: color,
+                ),
               ),
             ),
             addHorizontalSpace(10),

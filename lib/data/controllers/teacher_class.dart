@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class TeacherClassesState extends GetxController {
   //Values
   RxList<TeacherClass> classes = RxList<TeacherClass>([]);
+  RxList<TeacherClass> todayClasses = RxList<TeacherClass>([]);
 
   //State
   RxBool isLoading = RxBool(false);

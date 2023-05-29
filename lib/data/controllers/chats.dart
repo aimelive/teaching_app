@@ -12,8 +12,9 @@ class ChatsState extends GetxController {
   RxString error = RxString('');
 
   //Mutations
-  void groupChatsByUser(String? currentUser) {
-    if (currentUser == null) return;
+  List<UserChatMessage> groupChatsByUser(String? currentUser) {
+    List<UserChatMessage> groupedChats = [];
+    if (currentUser == null) [];
     for (ChatMessage chat in chats) {
       try {
         final user = UserChatMessage(
@@ -21,24 +22,25 @@ class ChatsState extends GetxController {
               .where(
                 (el) =>
                     el.groupInfo.id == chat.groupInfo.id &&
-                    chat.views.contains(currentUser),
+                    !el.views.contains(currentUser),
               )
               .length,
           latestMessage:
               chats.lastWhere((el) => el.groupInfo.id == chat.groupInfo.id),
         );
 
-        final index = chatsByUser.indexWhere(
+        final index = groupedChats.indexWhere(
           (c) => c.latestMessage.groupInfo.id == chat.groupInfo.id,
         );
         if (index == -1) {
-          chatsByUser.add(user);
+          groupedChats.add(user);
         } else {
-          chatsByUser[index] = user;
+          groupedChats[index] = user;
         }
       } catch (e) {
         // print(e);
       }
     }
+    return groupedChats;
   }
 }

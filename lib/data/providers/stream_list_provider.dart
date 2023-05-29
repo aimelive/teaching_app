@@ -1,32 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_connect_mobile/data/models/school.dart';
 import 'package:flutter/material.dart';
 
-class SingleSchoolProvider extends StatefulWidget {
-  const SingleSchoolProvider({
+class StreamListProvider<T> extends StatefulWidget {
+  const StreamListProvider({
     super.key,
-    required this.onError,
+    required this.query,
+    required this.fromJson,
     required this.loading,
+    required this.onError,
     required this.onSuccess,
-    required this.schoolId,
   });
-  final String schoolId;
+  final Query<Map<String, dynamic>> query;
   final Widget loading;
   final Widget Function(String error) onError;
-  final Widget Function(School school) onSuccess;
+  final Widget Function(List<T> data) onSuccess;
+  final T Function(Map<String, dynamic> json,String id) fromJson;
 
   @override
-  State<SingleSchoolProvider> createState() => _SingleSchoolProviderState();
+  State<StreamListProvider<T>> createState() => _StreamListProviderState<T>();
 }
 
-class _SingleSchoolProviderState extends State<SingleSchoolProvider> {
+class _StreamListProviderState<T> extends State<StreamListProvider<T>> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('schools')
-            .doc(widget.schoolId)
-            .snapshots(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: widget.query.snapshots(),
         builder: (context, snapshot) {
           bool hasError = snapshot.hasError;
           bool loading = snapshot.connectionState == ConnectionState.waiting;
@@ -42,15 +40,18 @@ class _SingleSchoolProviderState extends State<SingleSchoolProvider> {
 
           if (finished && snapshot.data != null && mounted) {
             try {
-              if (snapshot.data == null || snapshot.data?.data() == null) {
-                throw Exception("School not found!");
+              final data = snapshot.data?.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+                return widget.fromJson(data,document.id);
+              }).toList();
+              if (data == null) {
+                return widget.onError("Data not found!");
               }
-              return widget.onSuccess(
-                School.fromJson(snapshot.data!.data()!),
-              );
+              return widget.onSuccess(data);
             } catch (e) {
               return widget.onError(
-                "Oops! We couldn't find school your are looking for. $e",
+                "Oops! We couldn't find what your are looking for. $e",
               );
             }
           }
