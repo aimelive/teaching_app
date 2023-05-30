@@ -9,9 +9,6 @@ import '../../../helpers/ui_utils.dart';
 class ChatRoomAppbar extends StatelessWidget {
   final UserChatMessage user;
   final bool iAmReceiver;
-  final int totalChats;
-  final List<ChatMessage> images;
-  final List<String> members;
   final String currentUserId;
 
   const ChatRoomAppbar({
@@ -19,14 +16,12 @@ class ChatRoomAppbar extends StatelessWidget {
     required this.user,
     required this.iAmReceiver,
     required this.currentUserId,
-    required this.images,
-    required this.totalChats,
-    required this.members,
   });
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
         child: Row(
@@ -88,10 +83,9 @@ class ChatRoomAppbar extends StatelessWidget {
                       profile: iAmReceiver
                           ? user.latestMessage.senderInfo.avatar
                           : user.latestMessage.groupInfo.avatar,
-                      totalChats: totalChats,
-                      images: images,
+                 
                       isGroup: user.latestMessage.isGroup,
-                      members: members,
+           
                       currentUserId: currentUserId,
                     ),
                   ),

@@ -14,7 +14,7 @@ class StreamListProvider<T> extends StatefulWidget {
   final Widget loading;
   final Widget Function(String error) onError;
   final Widget Function(List<T> data) onSuccess;
-  final T Function(Map<String, dynamic> json,String id) fromJson;
+  final T Function(Map<String, dynamic> json, String id) fromJson;
 
   @override
   State<StreamListProvider<T>> createState() => _StreamListProviderState<T>();
@@ -43,7 +43,7 @@ class _StreamListProviderState<T> extends State<StreamListProvider<T>> {
               final data = snapshot.data?.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                return widget.fromJson(data,document.id);
+                return widget.fromJson(data, document.id);
               }).toList();
               if (data == null) {
                 return widget.onError("Data not found!");

@@ -4,18 +4,11 @@ import 'package:e_connect_mobile/data/models/chat.dart';
 import 'package:e_connect_mobile/services/app_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
-import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
 class ChatUtils {
   //Searvice instance
   final _chatsService = AppService();
-  //Stream service
-  Stream<QuerySnapshot> chatsStream(String currentUser) {
-    return Collection.chat
-        .where('receivers', arrayContains: currentUser)
-        .snapshots();
-  }
 
   void mapChatsToState(List<QueryDocumentSnapshot<Object?>> docs,
       ChatsState state, BuildContext context, String? currentUser) {
@@ -27,18 +20,19 @@ class ChatUtils {
       });
       final filtered = chats.toList();
       filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      state.chats.value = filtered;
+      state.chats.value = [...filtered];
       state.unread.value = filtered
           .where(
             (chat) => !chat.views.contains(currentUser),
           )
           .length;
     } catch (e) {
-      UiUtils.showCustomSnackBar(
-        context: context,
-        errorMessage: "Something went wrong, $e, restart the app.",
-        backgroundColor: secondaryColor,
-      );
+      // print(e);
+      // UiUtils.showCustomSnackBar(
+      //   context: context,
+      //   errorMessage: "Something went wrong, $e, restart the app.",
+      //   backgroundColor: secondaryColor,
+      // );
     }
   }
 

@@ -7,7 +7,6 @@ import 'package:e_connect_mobile/data/controllers/teacher_class.dart';
 import 'package:e_connect_mobile/data/models/school.dart';
 import 'package:e_connect_mobile/data/models/teacher_class.dart';
 import 'package:e_connect_mobile/data/models/user.dart';
-import 'package:e_connect_mobile/data/providers/schools_provider.dart';
 import 'package:e_connect_mobile/services/app_service.dart';
 import 'package:e_connect_mobile/services/auth_service.dart';
 import 'package:e_connect_mobile/services/user_service.dart';
@@ -20,7 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../ui/screens/home/home.dart';
+import '../ui/screens/auth/authenticated.dart';
 
 typedef OnLoading = void Function(bool val);
 
@@ -72,9 +71,7 @@ class AppUtils {
           if (mounted) {
             pushReplace(
               context,
-              to: const SchoolsProvider(
-                child: HomeScreen(),
-              ),
+              to: const AuthenticatedWrapper(),
             );
           }
         }

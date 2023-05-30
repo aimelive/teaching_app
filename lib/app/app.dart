@@ -1,4 +1,3 @@
-import 'package:e_connect_mobile/data/providers/chats_provider.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/constants/theme.dart';
 import 'package:e_connect_mobile/ui/screens/auth/auth_wrapper.dart';
@@ -38,14 +37,13 @@ class AppWidget extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return ChatsProvider(
-            child: GetMaterialApp(
+        return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           color: primaryColor,
           title: 'E-connect - Teaching App',
           theme: MyThemes.theme,
           home: child,
-        ));
+        );
       },
       child: const AuthWrapper(),
     );

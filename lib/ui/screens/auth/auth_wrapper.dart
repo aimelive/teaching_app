@@ -1,7 +1,6 @@
 import 'package:e_connect_mobile/data/controllers/auth.dart';
-import 'package:e_connect_mobile/data/providers/schools_provider.dart';
+import 'package:e_connect_mobile/ui/screens/auth/authenticated.dart';
 import 'package:e_connect_mobile/ui/screens/auth/welcome_screen.dart';
-import 'package:e_connect_mobile/ui/screens/home/home.dart';
 import 'package:e_connect_mobile/utils/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,9 +34,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Widget build(BuildContext context) {
     return Obx(
       () => (auth.user.value != null)
-          ? const SchoolsProvider(
-              child: HomeScreen(),
-            )
+          ? const AuthenticatedWrapper()
           : const WelcomeScreen(),
     );
   }

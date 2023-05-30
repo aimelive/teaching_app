@@ -12,9 +12,8 @@ class ChatsState extends GetxController {
   RxString error = RxString('');
 
   //Mutations
-  List<UserChatMessage> groupChatsByUser(String? currentUser) {
+  List<UserChatMessage> groupChatsByUser(String currentUser) {
     List<UserChatMessage> groupedChats = [];
-    if (currentUser == null) [];
     for (ChatMessage chat in chats) {
       try {
         final user = UserChatMessage(

@@ -1,19 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/data/controllers/auth.dart';
-import 'package:e_connect_mobile/data/controllers/chats.dart';
 import 'package:e_connect_mobile/data/models/chat.dart';
+import 'package:e_connect_mobile/data/providers/stream_list_provider.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
-import 'package:e_connect_mobile/ui/helpers/scroll_when_needed.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/ui/screens/chat/input_container.dart';
+import 'package:e_connect_mobile/ui/screens/chat/widgets/chat_room_appbar.dart';
+import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:e_connect_mobile/utils/chat_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:swipe_image_gallery/swipe_image_gallery.dart';
 
-import 'widgets/chat_room_appbar.dart';
+import '../../helpers/scroll_when_needed.dart';
 
 class ChatRoom extends StatefulWidget {
   final UserChatMessage user;
@@ -28,18 +29,9 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   final _chatUtils = ChatUtils();
-  final _chatsState = Get.find<ChatsState>();
   final _authState = Get.find<AuthState>();
 
   final _scrollController = ScrollController();
-
-  List<ChatMessage> thisUser(RxList<ChatMessage> chats) {
-    return chats
-        .where(
-          (chat) => chat.groupInfo.id == widget.user.latestMessage.groupInfo.id,
-        )
-        .toList();
-  }
 
   void _sendMessage(String message, String? image) {
     final currentUser = _authState.user.value!;
@@ -81,7 +73,10 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   void _scrollDown() {
-    if (thisUser(_chatsState.chats).isEmpty || !_scrollController.hasClients) {
+    // if (thisUser(_chatsState.chats).isEmpty || !_scrollController.hasClients) {
+    //   return;
+    // }
+    if (!_scrollController.hasClients) {
       return;
     }
 
@@ -99,79 +94,91 @@ class _ChatRoomState extends State<ChatRoom> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(
-            () {
-              final currentChats = thisUser(_chatsState.chats);
-              return ChatRoomAppbar(
-                user: widget.user,
-                iAmReceiver: widget.user.latestMessage.senderId !=
-                        _authState.user.value!.id &&
-                    !widget.user.latestMessage.isGroup,
-                currentUserId: _authState.user.value!.id,
-                images:
-                    currentChats.where((chat) => chat.image != null).toList(),
-                totalChats: currentChats.length,
-                members: currentChats.isNotEmpty
-                    ? currentChats[currentChats.length - 1].receivers
-                    : [],
-              );
-            },
+          ChatRoomAppbar(
+            user: widget.user,
+            iAmReceiver: widget.user.latestMessage.senderId !=
+                    _authState.user.value!.id &&
+                !widget.user.latestMessage.isGroup,
+            currentUserId: _authState.user.value!.id,
           ),
           Expanded(
             child: ScrollConfiguration(
               behavior: ScrollWhenNeededBehavior(),
-              child: Obx(() {
-                final availableChats = thisUser(_chatsState.chats);
-                final currentUserId = _authState.user.value!.id;
-
-                if (availableChats.isEmpty) {
-                  return Padding(
-                    padding: EdgeInsets.all(20.sp),
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () => _sendMessage("Hi 👋", null),
-                            child: const Text("Say Hi 👋"),
-                          ),
-                        ],
+              child: StreamListProvider<ChatMessage>(
+                  query: Collection.chat
+                      .where('groupInfo.id',
+                          isEqualTo: widget.user.latestMessage.groupInfo.id)
+                      .orderBy('createdAt'),
+                  fromJson: (json, id) => ChatMessage.fromJson(json, id),
+                  loading: Container(),
+                  onError: (error) {
+                    return Padding(
+                      padding: EdgeInsets.all(20.sp),
+                      child: const Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Something went wrong, try again later."),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }
-                final unreadMessages = availableChats
-                    .where(
-                      (element) =>
-                          !element.views.contains(currentUserId) &&
-                          element.messageId != "",
-                    )
-                    .map((e) => e.messageId)
-                    .toList();
-                _chatUtils.markMessagesAsRead(
-                  unreadMessages,
-                  currentUserId,
-                );
-                return ListView.builder(
-                    controller: _scrollController,
-                    reverse: true,
-                    padding: EdgeInsets.zero,
-                    physics: ScrollWhenNeededPhysics(
-                      targetPlatform: Theme.of(context).platform,
-                    ),
-                    itemCount: availableChats.length,
-                    itemBuilder: (_, index) {
-                      final message = availableChats.reversed.toList()[index];
-                      return ChatMessageTile(
-                        message: message,
-                        mounted: mounted,
-                        isMe: message.senderId == currentUserId,
-                        hasViewed: message.senderId == currentUserId &&
-                            message.views.length == message.receivers.length,
+                    );
+                  },
+                  onSuccess: (chats) {
+                    final currentUserId = _authState.user.value!.id;
+                    final availableChats = chats;
+
+                    if (availableChats.isEmpty) {
+                      return Padding(
+                        padding: EdgeInsets.all(20.sp),
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () => _sendMessage("Hi 👋", null),
+                                child: const Text("Say Hi 👋"),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
-                    });
-              }),
+                    }
+                    final unreadMessages = availableChats
+                        .where(
+                          (element) =>
+                              !element.views.contains(currentUserId) &&
+                              element.messageId != "",
+                        )
+                        .map((e) => e.messageId)
+                        .toList();
+                    _chatUtils.markMessagesAsRead(
+                      unreadMessages,
+                      currentUserId,
+                    );
+                    return ListView.builder(
+                        controller: _scrollController,
+                        reverse: true,
+                        padding: EdgeInsets.zero,
+                        physics: ScrollWhenNeededPhysics(
+                          targetPlatform: Theme.of(context).platform,
+                        ),
+                        itemCount: availableChats.length,
+                        itemBuilder: (_, index) {
+                          final message =
+                              availableChats.reversed.toList()[index];
+                          return ChatMessageTile(
+                            message: message,
+                            mounted: mounted,
+                            isMe: message.senderId == currentUserId,
+                            hasViewed: message.senderId == currentUserId &&
+                                message.views.length ==
+                                    message.receivers.length,
+                          );
+                        });
+                  }),
             ),
           ),
           InputContainer(

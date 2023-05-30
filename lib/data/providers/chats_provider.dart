@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_connect_mobile/data/controllers/auth.dart';
 import 'package:e_connect_mobile/data/controllers/chats.dart';
+import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:e_connect_mobile/utils/chat_utils.dart';
-import 'package:e_connect_mobile/utils/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,14 +17,16 @@ class ChatsProvider extends StatefulWidget {
 class _ChatsProviderState extends State<ChatsProvider> {
   final _chatUtils = ChatUtils();
   final _chatsState = Get.put(ChatsState());
-  final _curentUser = HiveUtils().getAuth()?.id;
+  final currentUser = Get.find<AuthState>().user.value!.id;
+
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream:
-            _curentUser == null ? null : _chatUtils.chatsStream(_curentUser!),
-        builder: (context, snapshot) {
+        stream: Collection.chat
+            .where('receivers', arrayContains: currentUser)
+            .snapshots(),
+        builder: (_, snapshot) {
           bool hasError = snapshot.hasError;
           bool loading = snapshot.connectionState == ConnectionState.waiting;
           bool done = snapshot.connectionState == ConnectionState.active;
@@ -39,16 +42,16 @@ class _ChatsProviderState extends State<ChatsProvider> {
           bool finished = done && !loading && !hasError;
 
           if (finished && snapshot.data != null && mounted) {
-            // _chatsState.error.value = '';
+            _chatsState.error.value = '';
             _chatUtils.mapChatsToState(
               snapshot.data!.docs,
               _chatsState,
               context,
-              _curentUser,
+              currentUser,
             );
 
             _chatsState.chatsByUser.value =
-                _chatsState.groupChatsByUser(_curentUser);
+                _chatsState.groupChatsByUser(currentUser);
           }
 
           return widget.child;

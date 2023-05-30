@@ -44,10 +44,11 @@ class _InputContainerState extends State<InputContainer> {
     return CustomKeyboardVisibleWidget(
       builder: (isVisible, bottom) {
         return SafeArea(
+          top: false,
           child: Container(
             padding: EdgeInsets.fromLTRB(
               10.r,
-              0.r,
+              10.r,
               10.r,
               bottom + 10.h,
             ),
