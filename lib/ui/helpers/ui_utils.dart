@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/widgets/error_message_overlay_container.dart';
+import 'package:e_connect_mobile/ui/widgets/warn_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -235,6 +236,25 @@ class UiUtils {
       context: context,
       errorMessage: "Copied to clipboard!",
       backgroundColor: secondaryColor,
+    );
+  }
+
+ static Future<bool?> showWarnDialog(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required String okButtonText,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      barrierColor: Colors.black26,
+      builder: ((context) {
+        return WarnDialogWidget(
+          title: title,
+          subtitle: subtitle,
+          okButtonText: okButtonText,
+        );
+      }),
     );
   }
 }

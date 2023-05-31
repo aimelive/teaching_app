@@ -30,6 +30,7 @@ class Collection {
   static const chatCollectionId = 'chatMessages';
   static const feedbackCollectionId = 'feedbacks';
   static const classesCollectionId = 'classes';
+  static const notificationCollectionId = 'notifications';
 
   //Getting collection refrence from path
   static CollectionReference<Map<String, dynamic>> collection(String path) {
@@ -43,6 +44,7 @@ class Collection {
   static final school = collection(schoolCollectionId);
   static final classes = collection(classesCollectionId);
   static final feedback = collection(feedbackCollectionId);
+  static final notification = collection(notificationCollectionId);
 }
 
 class AppUtils {
@@ -173,10 +175,9 @@ class AppUtils {
     List<QueryDocumentSnapshot<Object?>> docs,
     TeacherClassesState state,
     BuildContext context,
-    String? currentUser,
+    String currentUser,
   ) {
     try {
-      if (currentUser == null) return;
       final classes = docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
         return TeacherClass.fromJson(data);
@@ -227,5 +228,15 @@ class AppUtils {
       title: "Feedback sent!",
     );
     return true;
+  }
+
+  Future<void> clearNotification(String id) async {
+    final res = await appService.deleteNotification(id);
+    if (res == true) return;
+    UiUtils.showMessage(
+      message: res ??
+          "Something went wrong when we were trying to clear notification",
+      title: "Clear Notification Failed",
+    );
   }
 }

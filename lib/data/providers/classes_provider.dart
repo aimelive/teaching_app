@@ -25,12 +25,15 @@ class _TeacherClassesProviderState extends State<TeacherClassesProvider> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: Collection.classes
-            .where(
-              'schoolId',
-              whereIn: widget.schools.isEmpty ? ["no-school"] : widget.schools,
-            )
-            .snapshots(),
+        stream: widget.schools.isEmpty
+            ? null
+            : Collection.classes
+                .where(
+                  'schoolId',
+                  whereIn: widget.schools,
+                )
+                .where('teacherId', isEqualTo: _authState.user.value!.id)
+                .snapshots(),
         builder: (context, snapshot) {
           bool hasError = snapshot.hasError;
           bool loading = snapshot.connectionState == ConnectionState.waiting;
@@ -52,7 +55,7 @@ class _TeacherClassesProviderState extends State<TeacherClassesProvider> {
               snapshot.data!.docs,
               _classesState,
               context,
-              _authState.user.value?.id,
+              _authState.user.value!.id,
             );
           }
           return widget.child;

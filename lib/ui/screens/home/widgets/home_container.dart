@@ -1,9 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_connect_mobile/data/controllers/auth.dart';
 import 'package:e_connect_mobile/data/controllers/school.dart';
+import 'package:e_connect_mobile/data/models/notification.dart';
+import 'package:e_connect_mobile/data/providers/stream_list_provider.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/ui/screens/classes/home_teacher_class_container.dart';
+import 'package:e_connect_mobile/ui/screens/notification/notifications_page.dart';
+import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,18 +47,60 @@ class _HomeContainerState extends State<HomeContainer> {
                       authState.user.value!.profilePic,
                     ),
                   ),
-                  badges.Badge(
-                    badgeContent: Text(
-                      "8",
-                      style: TextStyle(color: whiteColor, fontSize: 10.sp),
+                  GestureDetector(
+                    onTap: () => pushPage(
+                      context,
+                      to: NotificationsPage(),
                     ),
-                    showBadge: true,
-                    position: badges.BadgePosition.topEnd(),
-                    child: SvgPicture.asset(
-                      getIconPath("notification"),
-                      height: 28.sp,
-                      // ignore: deprecated_member_use
-                      color: secondaryDark,
+                    child: StreamListProvider<AppNotification>(
+                      query: Collection.notification
+                          .where('to', isEqualTo: authState.user.value!.id)
+                          .where(
+                            'viewed',
+                            isEqualTo: false,
+                          ),
+                      fromJson: (json, id) => AppNotification.fromJson(json,id),
+                      loading: SvgPicture.asset(
+                        getIconPath("notification"),
+                        height: 28.sp,
+                        // ignore: deprecated_member_use
+                        color: secondaryDark,
+                      ),
+                      onError: (error) {
+                        print(error);
+                        return badges.Badge(
+                          badgeContent: Text(
+                            "!",
+                            style:
+                                TextStyle(color: whiteColor, fontSize: 10.sp),
+                          ),
+                          showBadge: true,
+                          position: badges.BadgePosition.topEnd(),
+                          child: SvgPicture.asset(
+                            getIconPath("notification"),
+                            height: 28.sp,
+                            // ignore: deprecated_member_use
+                            color: secondaryDark,
+                          ),
+                        );
+                      },
+                      onSuccess: (notifications) {
+                        return badges.Badge(
+                          badgeContent: Text(
+                            "${notifications.length}",
+                            style:
+                                TextStyle(color: whiteColor, fontSize: 10.sp),
+                          ),
+                          showBadge: notifications.isNotEmpty,
+                          position: badges.BadgePosition.topEnd(),
+                          child: SvgPicture.asset(
+                            getIconPath("notification"),
+                            height: 28.sp,
+                            // ignore: deprecated_member_use
+                            color: secondaryDark,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

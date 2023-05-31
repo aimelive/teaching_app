@@ -40,15 +40,17 @@ class _StreamListProviderState<T> extends State<StreamListProvider<T>> {
 
           if (finished && snapshot.data != null && mounted) {
             try {
-              final data = snapshot.data?.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
-                return widget.fromJson(data, document.id);
-              }).toList();
-              if (data == null) {
-                return widget.onError("Data not found!");
+              List<T> items = [];
+              for (DocumentSnapshot document in snapshot.data!.docs) {
+                try {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  items.add(widget.fromJson(data, document.id));
+                } catch (e) {
+                  continue;
+                }
               }
-              return widget.onSuccess(data);
+              return widget.onSuccess(items);
             } catch (e) {
               return widget.onError(
                 "Oops! We couldn't find what your are looking for. $e",

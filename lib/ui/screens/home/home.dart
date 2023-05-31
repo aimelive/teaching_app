@@ -151,44 +151,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 SizedBox(
                   height: 20.h,
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     "Schools",
-                //     "Teachers",
-                //     "Classes",
-                //     // "Announcements",
-                //   ]
-                //       .map(
-                //         (item) => Container(
-                //           width: 80.w,
-                //           height: 80.h,
-                //           padding: EdgeInsets.all(10.sp),
-                //           decoration: BoxDecoration(
-                //             border: Border.all(
-                //               color: primaryColor,
-                //               width: 3,
-                //             ),
-                //             borderRadius: BorderRadius.circular(16.r),
-                //           ),
-                //           child: Column(
-                //             mainAxisAlignment: MainAxisAlignment.center,
-                //             children: [
-                //               Icon(
-                //                 Icons.school,
-                //                 size: 25.sp,
-                //                 color: primaryColor,
-                //               ),
-                //               Text(item),
-                //             ],
-                //           ),
-                //         ),
-                //       )
-                //       .toList(),
-                // ),
-                // SizedBox(
-                //   height: 40.h,
-                // )
               ],
             ),
           );

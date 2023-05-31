@@ -5,6 +5,7 @@ import 'package:e_connect_mobile/utils/app_utils.dart';
 class AppService {
   final _chatsCollection = Collection.chat;
   final _feedback = Collection.feedback;
+  final _notification = Collection.notification;
 
   dynamic sendMessage(ChatMessage message) async {
     try {
@@ -32,6 +33,23 @@ class AppService {
       return true;
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  Future<dynamic> deleteNotification(String id) async {
+    try {
+      await _notification.doc(id).delete();
+      return true;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<void> markNotificationAsSeen(String id) async {
+    try {
+      await _notification.doc(id).update({'viewed': true});
+    } catch (e) {
+      return;
     }
   }
 }

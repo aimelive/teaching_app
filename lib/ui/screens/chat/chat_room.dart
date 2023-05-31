@@ -237,7 +237,7 @@ class ChatMessageTile extends StatelessWidget {
           ),
           padding: EdgeInsets.fromLTRB(
               15.w, message.isGroup && !isMe ? 0 : 10.r, 15.w, 10.r),
-          constraints: BoxConstraints(maxWidth: 200.w),
+          constraints: BoxConstraints(maxWidth: 220.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -266,7 +266,7 @@ class ChatMessageTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.r),
                       child: CachedNetworkImage(
                         imageUrl: message.image!,
-                        height: 200,
+                        height: 220.h,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),

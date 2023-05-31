@@ -144,11 +144,15 @@ class ChatUserTile extends StatelessWidget {
                   addVerticalSpace(5),
                   if (user.unread > 0)
                     CircleAvatar(
-                      radius: 10.r,
+                      radius: user.unread < 10
+                          ? 10.r
+                          : user.unread < 100
+                              ? 12.r
+                              : 16.r,
                       backgroundColor: primaryColor,
                       foregroundColor: whiteColor,
                       child: Text(
-                        user.unread.toString(),
+                        "${user.unread > 99 ? "99+" : user.unread}",
                       ),
                     )
                 ],

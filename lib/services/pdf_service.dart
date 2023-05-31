@@ -1,13 +1,27 @@
 import 'dart:io';
 
 import 'package:e_connect_mobile/data/models/teacher_class.dart';
+import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:flutter/services.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PdfService {
+  Widget PaddedText(
+    final String text, {
+    final TextAlign align = TextAlign.left,
+  }) =>
+      Padding(
+        padding: EdgeInsets.all(10),
+        child: Text(
+          text,
+          textAlign: align,
+        ),
+      );
+
   Future<File?> makePdf(
     String date,
     String teacherName,
@@ -27,35 +41,71 @@ class PdfService {
                 children: [
                   Column(
                     children: [
-                      Text("Attention to: $teacherName"),
+                      Text("Presented to: $teacherName"),
                       Text("Date: $date"),
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                   SizedBox(
-                    height: 150,
-                    width: 150,
+                    height: 100,
+                    width: 100,
                     child: Image(imageLogo),
                   ),
                 ],
               ),
+              SizedBox(height: 20),
               Table(
                 border: TableBorder.all(color: PdfColors.black),
-                children: classes
-                    .map(
-                      (trClass) => TableRow(
-                        children: [
-                          Expanded(child: Text(trClass.name), flex: 1),
-                          Expanded(child: Text(trClass.schoolName), flex: 1),
-                          Expanded(child: Text("04:00PM"), flex: 1),
-                          Expanded(
-                            child: Text("${trClass.duration} Min"),
-                            flex: 1,
-                          ),
-                        ],
+                children: [
+                  TableRow(
+                    children: [
+                      Padding(
+                        child: Text(
+                          'Course Name',
+                          // style: Theme.of(context).header4,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.all(10),
                       ),
-                    )
-                    .toList(),
+                      Padding(
+                        child: Text(
+                          'School Name',
+                          // style: Theme.of(context).header4,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Padding(
+                        child: Text(
+                          'Date',
+                          // style: Theme.of(context).header4,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.all(10),
+                      ),
+                    ],
+                  ),
+                  ...classes
+                      .map(
+                        (trClass) => TableRow(
+                          children: [
+                            Expanded(child: PaddedText(trClass.name), flex: 1),
+                            Expanded(
+                                child: PaddedText(trClass.schoolName), flex: 1),
+                            Expanded(
+                              child: PaddedText(
+                                "${UiUtils.date(trClass.date)} ${UiUtils.time(trClass.date, trClass.duration)}",
+                              ),
+                              flex: 1,
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList()
+                ],
               ),
               Padding(
                 child: Text(
@@ -68,17 +118,40 @@ class PdfService {
           );
         }),
       );
-      return await saveDocument("$teacherName-$date-schedule", pdf);
+      return saveDocument("$teacherName-$date-schedule.pdf", pdf);
     } catch (e) {
       return null;
     }
   }
 
+  Future<String> getExternalDocumentPath() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    Directory directory = Directory("");
+    if (Platform.isAndroid) {
+      directory = Directory("/storage/emulated/0/Download");
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    final exPath = directory.path;
+    await Directory(exPath).create(recursive: true);
+    return exPath;
+  }
+
+  Future<String> get _localPath async {
+    final String directory = await getExternalDocumentPath();
+    return directory;
+  }
+
   Future<File> saveDocument(String name, Document pdf) async {
     final bytes = await pdf.save();
 
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$name');
+    final path = await _localPath;
+
+    final file = File('$path/$name');
 
     await file.writeAsBytes(bytes);
 

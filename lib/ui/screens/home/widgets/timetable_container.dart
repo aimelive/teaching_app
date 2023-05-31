@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_connect_mobile/data/controllers/auth.dart';
 import 'package:e_connect_mobile/data/controllers/teacher_class.dart';
 import 'package:e_connect_mobile/services/pdf_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
@@ -23,6 +24,7 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
   late int _currentSelectedDayIndex = currentDate.weekday - 1;
   final _classesState = Get.find<TeacherClassesState>();
   final _pdf = PdfService();
+  final _currentUser = Get.find<AuthState>().user.value!;
 
   Widget _buildDayContainer(int index) {
     return InkWell(
@@ -189,8 +191,10 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
                   onTap: () async {
                     if (_classesState.classes.isEmpty) return;
                     final generatePdf = await _pdf.makePdf(
-                      "26 May 2023",
-                      "John Doe",
+                      UiUtils.date(
+                        Timestamp.fromDate(currentDate),
+                      ),
+                      _currentUser.names,
                       _classesState.classes,
                     );
 
@@ -203,10 +207,11 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
                       return;
                     }
                     await _pdf.openFile(generatePdf!);
+                    if (!mounted) return;
                     UiUtils.showMessage(
                       title: "Downloaded Schedule",
                       message:
-                          "You have downloaded your schedule, check your phone to see!",
+                          "You have downloaded your schedule, check your download folder phone to see!",
                       position: SnackPosition.BOTTOM,
                     );
                   },
