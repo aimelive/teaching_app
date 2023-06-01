@@ -182,7 +182,7 @@ class UiUtils {
     DateTime now = DateTime.now();
     int currentWeekDay = now.weekday;
     DateTime startDate = now.subtract(
-      Duration(days: currentWeekDay),
+      Duration(days: currentWeekDay - 1),
     );
     DateTime endDate = startDate.add(
       const Duration(days: 7),
@@ -239,7 +239,7 @@ class UiUtils {
     );
   }
 
- static Future<bool?> showWarnDialog(
+  static Future<bool?> showWarnDialog(
     BuildContext context, {
     required String title,
     required String subtitle,
@@ -262,13 +262,17 @@ class UiUtils {
 /// Navigating to another page by material page route
 dynamic pushPage(BuildContext context,
     {required Widget to, bool? asDialog}) async {
-  return await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => to,
-      fullscreenDialog: asDialog != null,
-    ),
-  );
+  try {
+    return await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => to,
+        fullscreenDialog: asDialog != null,
+      ),
+    );
+  } catch (e) {
+    return null;
+  }
 }
 
 /// Navigating to another page by material page route

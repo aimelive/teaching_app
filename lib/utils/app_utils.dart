@@ -13,6 +13,7 @@ import 'package:e_connect_mobile/services/user_service.dart';
 import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/utils/hive.dart';
+import 'package:e_connect_mobile/utils/notification_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -68,7 +69,8 @@ class AppUtils {
       User user = result;
       final resp = await authService.getUser(user.uid);
       if (resp.runtimeType == UserAccount) {
-        if (await hiveUtil.addAuth(user.refreshToken ?? "dummy-token", resp)) {
+        final fcmId = await NotificationUtils.getFcmToken();
+        if (await hiveUtil.addAuth(fcmId ?? "", resp)) {
           authState.user.value = resp;
           if (mounted) {
             pushReplace(

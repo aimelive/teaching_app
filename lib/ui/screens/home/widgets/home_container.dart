@@ -8,6 +8,7 @@ import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/ui/screens/classes/home_teacher_class_container.dart';
 import 'package:e_connect_mobile/ui/screens/notification/notifications_page.dart';
 import 'package:e_connect_mobile/utils/app_utils.dart';
+import 'package:e_connect_mobile/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -59,7 +60,8 @@ class _HomeContainerState extends State<HomeContainer> {
                             'viewed',
                             isEqualTo: false,
                           ),
-                      fromJson: (json, id) => AppNotification.fromJson(json,id),
+                      fromJson: (json, id) =>
+                          AppNotification.fromJson(json, id),
                       loading: SvgPicture.asset(
                         getIconPath("notification"),
                         height: 28.sp,
@@ -67,7 +69,6 @@ class _HomeContainerState extends State<HomeContainer> {
                         color: secondaryDark,
                       ),
                       onError: (error) {
-                        print(error);
                         return badges.Badge(
                           badgeContent: Text(
                             "!",
@@ -85,6 +86,9 @@ class _HomeContainerState extends State<HomeContainer> {
                         );
                       },
                       onSuccess: (notifications) {
+                        for (var notification in notifications) {
+                          NotificationUtils.notify(notification);
+                        }
                         return badges.Badge(
                           badgeContent: Text(
                             "${notifications.length}",

@@ -53,12 +53,28 @@ class PdfService {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              Padding(
+                child: Text(
+                  "Current Week Schedule!",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                padding: const EdgeInsets.all(10),
+              ),
               Table(
                 border: TableBorder.all(color: PdfColors.black),
                 children: [
                   TableRow(
                     children: [
+                      Padding(
+                        child: Text(
+                          'Day',
+                          // style: Theme.of(context).header4,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.all(10),
+                      ),
                       Padding(
                         child: Text(
                           'Course Name',
@@ -71,6 +87,15 @@ class PdfService {
                       Padding(
                         child: Text(
                           'School Name',
+                          // style: Theme.of(context).header4,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Padding(
+                        child: Text(
+                          'Assistant Name',
                           // style: Theme.of(context).header4,
                           style: TextStyle(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
@@ -92,9 +117,19 @@ class PdfService {
                       .map(
                         (trClass) => TableRow(
                           children: [
+                            Expanded(
+                              child: PaddedText(
+                                weekDaysFull[trClass.date.toDate().weekday - 1],
+                              ),
+                              flex: 1,
+                            ),
                             Expanded(child: PaddedText(trClass.name), flex: 1),
                             Expanded(
                                 child: PaddedText(trClass.schoolName), flex: 1),
+                            Expanded(
+                                child: PaddedText(trClass.trAssistantName ??
+                                    "<assistant_name>"),
+                                flex: 1),
                             Expanded(
                               child: PaddedText(
                                 "${UiUtils.date(trClass.date)} ${UiUtils.time(trClass.date, trClass.duration)}",

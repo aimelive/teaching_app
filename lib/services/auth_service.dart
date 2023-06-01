@@ -2,6 +2,7 @@ import 'package:e_connect_mobile/data/models/user.dart';
 import 'package:e_connect_mobile/utils/app_utils.dart';
 import 'package:e_connect_mobile/utils/exception.dart';
 import 'package:e_connect_mobile/utils/hive.dart';
+import 'package:e_connect_mobile/utils/notification_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -19,6 +20,9 @@ class AuthService {
         email: email,
         password: password,
       );
+      await Collection.user.doc(response.user!.uid).update(
+        {"fcm_id": await NotificationUtils.getFcmToken()},
+      );
       return response.user;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -32,6 +36,7 @@ class AuthService {
     try {
       await _auth.signOut();
       await HiveUtils().removeAuth();
+      NotificationUtils.onLogout();
     } on FirebaseAuthException catch (e) {
       return e.message;
     } catch (error) {

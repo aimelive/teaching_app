@@ -9,6 +9,7 @@ class TeacherClass {
   String schoolId;
   String schoolName;
   String? trAssistantId;
+  String? trAssistantName;
   String teacherId;
   Timestamp date;
   Timestamp createdAt;
@@ -23,6 +24,7 @@ class TeacherClass {
     required this.schoolId,
     required this.schoolName,
     this.trAssistantId,
+    this.trAssistantName,
     required this.teacherId,
     required this.date,
     required this.createdAt,
@@ -42,6 +44,7 @@ class TeacherClass {
         schoolName: json["schoolName"],
         room: json["room"],
         trAssistantId: json["trAssistantId"],
+        trAssistantName: json["trAssistantName"],
         teacherId: json["teacherId"],
         date: json["date"],
         createdAt: json["createdAt"],

@@ -15,7 +15,7 @@ class AppNotification {
     required this.to,
   });
 
-  factory AppNotification.fromJson(Map<String, dynamic> json,String id) =>
+  factory AppNotification.fromJson(Map<String, dynamic> json, String id) =>
       AppNotification(
         id: id,
         createdAt: json["createdAt"],
@@ -36,35 +36,27 @@ class NotificationData {
   String action;
   String actionId;
   String message;
+  String? pictureUrl;
 
   NotificationData({
+    required this.pictureUrl,
     required this.action,
     required this.actionId,
     required this.message,
   });
 
-  NotificationData copyWith({
-    String? action,
-    String? actionId,
-    String? message,
-    String? pictureUrl,
-  }) =>
-      NotificationData(
-        action: action ?? this.action,
-        actionId: actionId ?? this.actionId,
-        message: message ?? this.message,
-      );
-
   factory NotificationData.fromJson(Map<String, dynamic> json) =>
       NotificationData(
-        action: json["action"],
-        actionId: json["actionId"],
-        message: json["message"],
+        action: json["action"] ?? "NOTIFY_USER",
+        actionId: json["actionId"] ?? "",
+        message: json["message"] ?? "Received new notification",
+        pictureUrl: json["pictureUrl"] ??
+            "https://cdn.pixabay.com/photo/2016/10/12/02/54/girl-1733345_1280.jpg",
       );
 
-  Map<String, dynamic> toJson() => {
-        "action": action,
-        "actionId": actionId,
-        "message": message,
-      };
+  // Map<String, dynamic> toJson() => {
+  //       "action": action,
+  //       "actionId": actionId,
+  //       "message": message,
+  //     };
 }

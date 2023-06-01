@@ -192,10 +192,16 @@ class _TimeTableContainerState extends State<TimeTableContainer> {
                     if (_classesState.classes.isEmpty) return;
                     final generatePdf = await _pdf.makePdf(
                       UiUtils.date(
-                        Timestamp.fromDate(currentDate),
+                        Timestamp.now(),
                       ),
                       _currentUser.names,
-                      _classesState.classes,
+                      _classesState.classes
+                          .where(
+                            (p0) => UiUtils.isThisWeek(
+                              p0.date.toDate(),
+                            ),
+                          )
+                          .toList(),
                     );
 
                     if (generatePdf == null && mounted) {

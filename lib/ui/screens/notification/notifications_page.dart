@@ -6,6 +6,7 @@ import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/helpers/ui_utils.dart';
 import 'package:e_connect_mobile/ui/screens/classes/teacher_classes_screen.dart';
 import 'package:e_connect_mobile/ui/screens/school/school.dart';
+import 'package:e_connect_mobile/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -39,7 +40,7 @@ class NotificationsPage extends StatelessWidget {
                 fromJson: (json, id) => AppNotification.fromJson(json, id),
                 loading: const Text("Loading..."),
                 onError: (error) {
-                  print(error);
+                  // print(error);
                   return CustomErrorWidget(error: error);
                 },
                 onSuccess: (notifications) {
@@ -71,22 +72,6 @@ class NotificationTile extends StatefulWidget {
 }
 
 class _NotificationTileState extends State<NotificationTile> {
-  //Get notification title
-  String _getNotificationTitle(String type) {
-    switch (type) {
-      case "ASSIGN_USER_CLASS":
-        return "Assigned to a new class";
-      case "UNASSIGN_USER_CLASS":
-        return "Unassigned from a class";
-      case "ASSIGN_USER_SCHOOL":
-        return "Assigned to a new school";
-      case "UNASSIGN_USER_SCHOOL":
-        return "Unassigned from a school";
-      default:
-        return "";
-    }
-  }
-
   //Get notification direction
   Widget _getNotificationDirection(String type) {
     switch (type) {
@@ -144,8 +129,7 @@ class _NotificationTileState extends State<NotificationTile> {
   void markAsViewed() {
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
-        //TODO: mark notification as seen
-        AppService().markNotificationAsSeen(widget.notification.id + "nm");
+        AppService().markNotificationAsSeen(widget.notification.id);
       }
     });
   }
@@ -172,8 +156,7 @@ class _NotificationTileState extends State<NotificationTile> {
           subtitle: "Are you sure do you want to clear this notification?",
           okButtonText: "Yes",
         );
-        //TODO: Clear the notification.
-        AppUtils().clearNotification(widget.notification.id + "nm");
+        AppUtils().clearNotification(widget.notification.id);
         return delete ?? false;
       },
       child: Container(
@@ -234,7 +217,9 @@ class _NotificationTileState extends State<NotificationTile> {
                     ),
                     addVerticalSpace(2),
                     Text(
-                      _getNotificationTitle(widget.notification.data.action),
+                      NotificationUtils.getNotificationTitle(
+                        widget.notification.data.action,
+                      ),
                       style: const TextStyle(
                         color: secondaryDark,
                         fontWeight: FontWeight.w500,

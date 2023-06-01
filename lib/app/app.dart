@@ -2,6 +2,7 @@ import 'package:e_connect_mobile/ui/constants/colors.dart';
 import 'package:e_connect_mobile/ui/constants/theme.dart';
 import 'package:e_connect_mobile/ui/screens/auth/auth_wrapper.dart';
 import 'package:e_connect_mobile/utils/hive.dart';
+import 'package:e_connect_mobile/utils/notification_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,9 @@ Future<void> initializeApp() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+//Initialize notifications
+  await NotificationUtils.initialize();
 
   //Initializing flutter hive database
   await Hive.initFlutter();
