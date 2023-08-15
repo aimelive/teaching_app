@@ -22,7 +22,8 @@ The E-connect Teachers App is a comprehensive mobile application built using the
     <img src="./assets/screenshots/15.png" width="120"/>
     <img src="./assets/screenshots/16.png" width="120"/>
     </p>
-
+## Demo Video
+[https://www.youtube.com/watch?v=srCSJmT5jkg](https://www.youtube.com/watch?v=srCSJmT5jkg)
 ## Features
 
 - **Schedule Management:** Teachers can access their daily and weekly schedules with details about the classes they need to teach and the corresponding locations. The app ensures that educators stay organized and prepared for their classes.
@@ -49,7 +50,7 @@ The E-connect Teachers App is a comprehensive mobile application built using the
 2. Navigate to the project directory:
 
    ```bash
-   cd e-connect-teachers-app
+   cd teaching_app
    ```
 
 3. Install dependencies using Flutter:
