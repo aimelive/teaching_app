@@ -22,6 +22,7 @@ The E-connect Teachers App is a comprehensive mobile application built using the
     <img src="./assets/screenshots/15.png" width="120"/>
     <img src="./assets/screenshots/16.png" width="120"/>
     </p>
+    
 ## Demo Video
 [https://www.youtube.com/watch?v=srCSJmT5jkg](https://www.youtube.com/watch?v=srCSJmT5jkg)
 ## Features
